@@ -15,8 +15,8 @@ import {
 } from "@nextui-org/react";
 import NextLink from "next/link";
 import { useContext, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
-import { CounterContext } from "@/lib/context/counter";
+import { useAppDispatch, useAppSelector } from "@/state/redux/store";
+import { CounterContext } from "@/state/context/counter";
 // import {AcmeLogo} from "./AcmeLogo.jsx";
 
 export default function Nav() {
