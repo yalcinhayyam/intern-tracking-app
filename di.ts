@@ -14,11 +14,11 @@ import { container } from "tsyringe";
 //   }
 // }
 
-var client = new PrismaClient();
+// var client = new PrismaClient();
 // await client.$connect()
-container.registerInstance(PRISMA_CLIENT, client);
+// container.registerInstance(PRISMA_CLIENT, client);
 // container.registerInstance(PRISMA_CLIENT, PrismaClientProvider.instance);
-// container.registerSingleton(PRISMA_CLIENT, PrismaClient);
+container.registerSingleton(PRISMA_CLIENT, PrismaClient);
 container.register(GET_BOOKS_HANDLER, GetBooksHandler);
 
 export { container };
