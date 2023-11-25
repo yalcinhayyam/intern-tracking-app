@@ -15,10 +15,10 @@ export default function Home() {
   const count = useAppSelector((state) => state.counter.count);
   const dispatch = useAppDispatch();
   const context = useContext(CounterContext);
+  console.log(location.origin)
   return (
-    
     <iframe
-      src="https://docs.google.com/gview?url=http://localhost:3000/word.docx"
+      src={`https://docs.google.com/gview?url=${location.origin}/word.docx`}
       style={{ width: "600px", height: "500px" }}
       frameBorder="0"
     ></iframe>
