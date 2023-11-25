@@ -15,7 +15,7 @@ CREATE TABLE "Author" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "email" TEXT,
+    "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "surname" TEXT NOT NULL,
     "number" TEXT NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Contact" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "email" TEXT,
+    "phone" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT false,
     CONSTRAINT "Contact_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -101,7 +101,7 @@ CREATE UNIQUE INDEX "Book_authorId_key" ON "Book"("authorId");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Contact_email_key" ON "Contact"("email");
+CREATE UNIQUE INDEX "Contact_phone_key" ON "Contact"("phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Internship_userId_key" ON "Internship"("userId");

@@ -7,38 +7,41 @@ import { Cursor, CursorScalar } from "@/core";
 import { container } from "@/di";
 import { BookResolver } from "@/graphql";
 import { Context } from "@/types";
-// import { gql } from "graphql-tag";
+import { NextRequest } from "next/server";
+// // import { gql } from "graphql-tag";
 
-const typeDefs = `#graphql
-  type Query {
-    hello: String
-  }
+// import { NextRequest, NextResponse } from "next/server";
 
-type Mutation {
-  example(product:ProductInput!) :Product!
+// const typeDefs = `#graphql
+//   type Query {
+//     hello: String
+//   }
 
-}
-  input ProductInput {
-    title: String!
-    options: [OptionInput!]
-  }
+// type Mutation {
+//   example(product:ProductInput!) :Product!
 
-  input OptionInput {
-    title: String!
-    value: String!
-  }
+// }
+//   input ProductInput {
+//     title: String!
+//     options: [OptionInput!]
+//   }
 
-  type Product {
-    id: Int!
-    title: String!
-    options: [Option!]
-  }
+//   input OptionInput {
+//     title: String!
+//     value: String!
+//   }
 
-  type Option {
-    title: String!
-    value: String!
-  }
-`;
+//   type Product {
+//     id: Int!
+//     title: String!
+//     options: [Option!]
+//   }
+
+//   type Option {
+//     title: String!
+//     value: String!
+//   }
+// `;
 
 const schema = await buildSchema({
   resolvers: [BookResolver],
@@ -62,9 +65,9 @@ const handler = startServerAndCreateNextHandler<NextApiRequest, Context>(
 
 export { handler as GET, handler as POST };
 
-// export async function GET(request: NextRequest) {
-//   return handler(request);
-// }
+// export const GET = async (request: NextRequest) => handler(request);
+// export const POST = async (request: NextRequest) => handler(request);
+
 
 // export async function POST(request: NextRequest) {
 //   return handler(request);

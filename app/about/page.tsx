@@ -23,7 +23,7 @@ export default function About() {
   const context = useContext(CounterContext);
   return (
     <>
-      Redux:{count.value} Context Api : {context.count}
+      Redux:{count.value} Context Api:{context.count}
     </>
   );
 }
