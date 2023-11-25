@@ -7,21 +7,30 @@ import { useAppDispatch, useAppSelector, incremented } from "@/state/redux";
 import { Button } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { WiAlien } from "react-icons/wi";
 import FileUploader from "@/components/FileUploader";
+import { usePathname, useRouter } from "next/navigation";
 export default function Home() {
+  const [origin, setOrigin] = useState<string | undefined>(undefined);
+  const router = useRouter();
   const count = useAppSelector((state) => state.counter.count);
   const dispatch = useAppDispatch();
   const context = useContext(CounterContext);
-  console.log(location.origin)
+  useEffect(() => {
+    // console.log(path);
+    setOrigin(location.origin);
+    console.log(location.origin);
+  }, []);
   return (
-    <iframe
-      src={`https://docs.google.com/gview?url=${location.origin}/word.docx`}
-      style={{ width: "600px", height: "500px" }}
-      frameBorder="0"
-    ></iframe>
+    origin && (
+      <iframe
+        src={`https://docs.google.com/gview?url=${origin}/word.docx&embedded=true`}
+        style={{ width: "600px", height: "500px" }}
+        frameBorder="0"
+      ></iframe>
+    )
   );
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
