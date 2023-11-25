@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator typegraphql {
+  provider = "typegraphql-prisma"
+  output   = "../prisma/generated/type-graphql"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// ----- Example ----
+model Book {
+  id       String @id @default(uuid())
+  title    String
+  authorId String @unique
+  author   Author @relation(fields: [authorId], references: [id])
+}
+
+model Author {
+  id   String @id @default(uuid())
+  name String
+  book Book?
+}
+
+/// ----- Example ----
+model User {
+  id      Int    @id @default(autoincrement())
+  email   String @unique
+  name    String
+  surname String
+  number  String
+
+  salt Bytes
+  hash Bytes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  isActive    Boolean      @default(false)
+  isVerified  Boolean      @default(false)
+  roleId      Int
+  roles       Role         @relation(fields: [roleId], references: [id])
+  contacts    Contact[]
+  internships Internship[]
+}
+
+model Contact {
+  id    Int    @id @default(autoincrement())
+  phone String @unique
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  isActive Boolean @default(false)
+}
+
+model Internship {
+  id        Int      @id @default(autoincrement())
+  title     String
+  workplace String
+  day       Int
+  startDate DateTime
+  endDate   DateTime
+
+  documents  Document[]
+  conclusion Conclusion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  internTypeId Int
+  internType   InternType @relation(fields: [internTypeId], references: [id])
+}
+
+model InternType {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  internships Internship[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  users User[]
+}
+
+model Document {
+  id           Int        @id @default(autoincrement())
+  src          String
+  internshipId Int
+  internship   Internship @relation(fields: [internshipId], references: [id])
+
+  documentTypeId Int
+  documentType   DocumentType @relation(fields: [documentTypeId], references: [id])
+
+  isApproved Boolean @default(false)
+}
+
+model DocumentType {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  documents Document[]
+}
+
+model Conclusion {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isApproved  Boolean  @default(false)
+  description String
+
+  internshipId Int
+  internship   Internship @relation(fields: [internshipId], references: [id])
+}
+
+// enum InternTypes {
+//   MANDATORY
+//   VOLUNTARY
+//   LONG_PERIOD
+// }
+
+// enum Roles {
+//   USER
+//   ADMIN
+// }
