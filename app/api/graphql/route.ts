@@ -1,52 +1,20 @@
 import "reflect-metadata";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { ApolloServer } from "@apollo/server";
-import { NextApiRequest, NextApiResponse } from "next";
 import { buildSchema } from "type-graphql";
-import { Cursor, CursorScalar } from "@/core";
-import { container } from "@/di";
-import { BookResolver } from "@/graphql";
-import { Context } from "@/types";
+import { injector } from "@/lib/di";
+import { BookResolver } from "@/lib/graphql";
+import { Context } from "@/lib/utilities";
 import { NextRequest } from "next/server";
-// // import { gql } from "graphql-tag";
-
-// import { NextRequest, NextResponse } from "next/server";
-
-// const typeDefs = `#graphql
-//   type Query {
-//     hello: String
-//   }
-
-// type Mutation {
-//   example(product:ProductInput!) :Product!
-
-// }
-//   input ProductInput {
-//     title: String!
-//     options: [OptionInput!]
-//   }
-
-//   input OptionInput {
-//     title: String!
-//     value: String!
-//   }
-
-//   type Product {
-//     id: Int!
-//     title: String!
-//     options: [Option!]
-//   }
-
-//   type Option {
-//     title: String!
-//     value: String!
-//   }
-// `;
+import { getServerSession } from "next-auth";
+import { Cursor, CursorScalar, authOptions } from "@/lib/utilities";
+import { AuthChecker } from "@/lib/graphql/auth-checker";
 
 const schema = await buildSchema({
   resolvers: [BookResolver],
+  authChecker: AuthChecker,
   container: {
-    get: (cls) => container.resolve(cls),
+    get: (cls) => injector.service(cls),
   },
   scalarsMap: [{ type: Cursor, scalar: CursorScalar }],
 });
@@ -54,21 +22,11 @@ const schema = await buildSchema({
 const server = new ApolloServer<Context>({
   schema,
 });
-const handler = startServerAndCreateNextHandler<NextApiRequest, Context>(
-  server,
-  {
-    context: async (req, res) => {
-      return { req, res, user: "Halil" };
-    },
-  }
-);
+const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
+  context: async (req, res) => {
+    const session = await getServerSession(authOptions);
+    return { req, res, session };
+  },
+});
 
 export { handler as GET, handler as POST };
-
-// export const GET = async (request: NextRequest) => handler(request);
-// export const POST = async (request: NextRequest) => handler(request);
-
-
-// export async function POST(request: NextRequest) {
-//   return handler(request);
-// }

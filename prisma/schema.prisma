@@ -31,13 +31,13 @@ model Author {
 
 /// ----- Example ----
 model User {
-  id      Int    @id @default(autoincrement())
+  id      String @id @default(uuid())
   email   String @unique
-  name    String
+  name    String //@db.Text
   surname String
-  number  String
+  // number  String
 
-  salt Bytes
+  // salt Bytes
   hash Bytes
 
   createdAt DateTime @default(now())
@@ -45,24 +45,24 @@ model User {
 
   isActive    Boolean      @default(false)
   isVerified  Boolean      @default(false)
-  roleId      Int
-  roles       Role         @relation(fields: [roleId], references: [id])
+  roleId      Int          
+  role        Role         @relation(fields: [roleId], references: [id])
   contacts    Contact[]
   internships Internship[]
 }
 
 model Contact {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(uuid())
   phone String @unique
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
 
   isActive Boolean @default(false)
 }
 
 model Internship {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   title     String
   workplace String
   day       Int
@@ -74,7 +74,7 @@ model Internship {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    Int      @unique
+  userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
 
   internTypeId Int
@@ -84,6 +84,7 @@ model Internship {
 model InternType {
   id    Int    @id @default(autoincrement())
   title String
+  code  String
 
   internships Internship[]
 }
@@ -91,39 +92,50 @@ model InternType {
 model Role {
   id    Int    @id @default(autoincrement())
   title String
-
+  code  String
   users User[]
 }
 
 model Document {
-  id           Int        @id @default(autoincrement())
+  id           String     @id @default(uuid())
   src          String
-  internshipId Int
+  internshipId String
   internship   Internship @relation(fields: [internshipId], references: [id])
 
-  documentTypeId Int
+  documentTypeId String
   documentType   DocumentType @relation(fields: [documentTypeId], references: [id])
 
   isApproved Boolean @default(false)
 }
 
 model DocumentType {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(uuid())
   title String
 
   documents Document[]
 }
 
 model Conclusion {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isApproved  Boolean  @default(false)
   description String
 
-  internshipId Int
+  internshipId String
   internship   Internship @relation(fields: [internshipId], references: [id])
 }
+
+// model A {
+//   id String @id @default(uuid())
+//   b  B?
+// }
+
+// model B {
+//   id  String @id @default(uuid())
+//   aId String @unique
+//   a   A      @relation(fields: [aId], references: [id])
+// }
 
 // enum InternTypes {
 //   MANDATORY

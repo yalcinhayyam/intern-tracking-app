@@ -1,7 +1,7 @@
 "use client";
 
-import { CounterContext } from "@/state/context/counter";
-import { useAppSelector } from "@/state/redux/store";
+import { CounterContext } from "@/lib/context";
+import { useAppSelector } from "@/lib/redux";
 import { useContext } from "react";
 
 // import dynamic from "next/dynamic";

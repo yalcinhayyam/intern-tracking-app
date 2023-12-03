@@ -1,16 +1,13 @@
 "use client";
-import {
-  CounterContext,
-  CounterContextProvider,
-} from "@/state/context/counter";
-import { useAppDispatch, useAppSelector, incremented } from "@/state/redux";
+import { CounterContext, CounterContextProvider } from "@/lib/context";
+import { useAppDispatch, useAppSelector, incremented } from "@/lib/redux";
 import { Button } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { WiAlien } from "react-icons/wi";
-import FileUploader from "@/components/FileUploader";
+import FileUploader from "@/lib/components/FileUploader";
 import { usePathname, useRouter } from "next/navigation";
 export default function Home() {
   const [origin, setOrigin] = useState<string | undefined>(undefined);
@@ -23,17 +20,19 @@ export default function Home() {
     setOrigin(location.origin);
     console.log(location.origin);
   }, []);
-  return (
-    origin && (
-      <iframe
-        src={`https://docs.google.com/gview?url=${origin}/word.docx&embedded=true`}
-        style={{ width: "600px", height: "500px" }}
-        frameBorder="0"
-      ></iframe>
-    )
-  );
+  if (false)
+    return (
+      origin && (
+        <iframe
+          src={`https://docs.google.com/gview?url=${origin}/word.docx&embedded=true`}
+          style={{ width: "600px", height: "500px" }}
+          frameBorder="0"
+        ></iframe>
+      )
+    );
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <Component />
       <FileUploader />
       <Link href={"/about"}>About</Link>
       Redux :{" "}
@@ -56,3 +55,25 @@ export default function Home() {
     </main>
   );
 }
+
+import { useSession, signIn, signOut } from "next-auth/react";
+import { convert } from "@/lib/utilities/converter";
+function Component() {
+  const { data: session } = useSession();
+  if (session) {
+    return (
+      <>
+        Signed in as {session.user?.email} <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </>
+    );
+  }
+  return (
+    <>
+      Not signed in <br />
+      <button onClick={() => signIn()}>Sign in</button>
+    </>
+  );
+}
+
+console.log(convert(10));

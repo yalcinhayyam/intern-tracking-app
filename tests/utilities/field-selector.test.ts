@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { fieldSelector, prismaFieldSelector } from "@/utilities";
+import { fieldSelector } from "@/lib/utilities";
 
 it("should correctly convert empty objects to true", () => {
   const data = {
@@ -30,7 +30,7 @@ it("should correctly convert empty objects to true", () => {
     },
   };
 
-  const result = fieldSelector(data);
+  const result = fieldSelector(data as any);
   expect(result).toEqual(expectedResult);
 });
 
@@ -74,6 +74,6 @@ it("prisma should correctly convert empty objects to true", () => {
     },
   };
 
-  const result = prismaFieldSelector(data);
+  const result = fieldSelector(data as any);
   expect(result).toEqual(expectedResult);
 });
