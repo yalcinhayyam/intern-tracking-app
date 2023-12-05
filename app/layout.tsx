@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import Nav from "@/lib/components/Nav";
 import ReduxProvider from "@/lib/components/ReduxProvider";
 import "./globals.scss";

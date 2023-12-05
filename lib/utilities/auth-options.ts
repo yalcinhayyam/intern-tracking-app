@@ -1,7 +1,7 @@
+import { injector } from "@/lib/di";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { injector } from "@/lib/di";
 
 import { GET_USER_HANDLER } from "@/lib/constants";
 import { GetUserParams } from "@/lib/use-cases";
@@ -33,11 +33,13 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        console.log(credentials)
         // if (credentials?.username) {
         //   return await Promise.resolve({
         //     id: "1",
         //     email: "wdwq",
         //     name: "qwd",
+        //     role: "ADMIN",
         //   });
         // }
         const getUser = injector.inject<IUser, GetUserParams>(GET_USER_HANDLER);

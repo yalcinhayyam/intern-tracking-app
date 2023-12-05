@@ -14,6 +14,7 @@ export class GetUserHandler
 {
   constructor(@inject(PRISMA_CLIENT) private readonly prisma: PrismaClient) {}
   async handle(args: GetUserParams): Result<IUser | undefined | null> {
+    console.log(await this.prisma.user.findMany())
     var result = await this.prisma.user.findFirst({
       where: {
         email: args.email,

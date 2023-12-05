@@ -43,7 +43,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  isActive    Boolean      @default(false)
+  isActive    Boolean      @default(true)
   isVerified  Boolean      @default(false)
   roleId      Int          
   role        Role         @relation(fields: [roleId], references: [id])

@@ -1,9 +1,8 @@
-import "reflect-metadata";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { ApolloServer } from "@apollo/server";
 import { buildSchema } from "type-graphql";
 import { injector } from "@/lib/di";
-import { BookResolver } from "@/lib/graphql";
+import { BookResolver, UserResolver, AuthResolver } from "@/lib/graphql";
 import { Context } from "@/lib/utilities";
 import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
@@ -11,7 +10,7 @@ import { Cursor, CursorScalar, authOptions } from "@/lib/utilities";
 import { AuthChecker } from "@/lib/graphql/auth-checker";
 
 const schema = await buildSchema({
-  resolvers: [BookResolver],
+  resolvers: [BookResolver, UserResolver, AuthResolver],
   authChecker: AuthChecker,
   container: {
     get: (cls) => injector.service(cls),

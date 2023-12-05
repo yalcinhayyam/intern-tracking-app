@@ -7,10 +7,10 @@ import { Length } from "class-validator";
 @InputType()
 export class CreateBookInput {
   @Field()
-  @Length(5, 255)
+  @Length(3, 255)
   author!: string;
   @Field()
-  @Length(5, 255)
+  @Length(3, 255)
   title!: string;
 }
 
@@ -58,42 +58,42 @@ export class BookConnection implements IConnection<BookEdge> {
 
 
 
-// @ObjectType()
-// export class Role {
-//   @Field()
-//   id!: number;
-//   @Field()
-//   code!: string;
-//   @Field()
-//   title!: string;
-// }
+@ObjectType()
+export class Role {
+  @Field()
+  id!: number;
+  @Field()
+  code!: string;
+  @Field()
+  title!: string;
+}
 
-// @InputType()
-// export class CreateUserInput {
-//   @Field()
-//   // @IsEmail()
-//   email!: string;
-//   @Field()
-//   // @Length(3, 50)
-//   name!: string;
-//   @Field()
-//   // @Length(3, 50)
-//   surname!: string;
-//   @Field()
-//   // @Length(8)
-//   password!: string;
-// }
+@InputType()
+export class CreateUserInput {
+  @Field()
+  // @IsEmail()
+  email!: string;
+  @Field()
+  // @Length(3, 50)
+  name!: string;
+  @Field()
+  // @Length(3, 50)
+  surname!: string;
+  @Field()
+  // @Length(8)
+  password!: string;
+}
 
-// @ObjectType()
-// export class CreateUserPayload {
-//   @Field()
-//   id!: string;
-//   @Field()
-//   email!: string;
-//   @Field((of)=> Role)
-//   role!: Role;
-//   @Field()
-//   name!: string;
-//   @Field()
-//   surname!: string;
-// }
+@ObjectType()
+export class CreateUserPayload {
+  @Field()
+  id!: string;
+  @Field()
+  email!: string;
+  @Field((of)=> Role)
+  role!: Role;
+  @Field()
+  name!: string;
+  @Field()
+  surname!: string;
+}

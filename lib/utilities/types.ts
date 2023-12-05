@@ -1,12 +1,17 @@
 import { Either } from "effect/Either";
 import { Exit } from "effect/Exit";
-import { Session } from "next-auth";
+import { ISODateString, Session } from "next-auth";
 
 // export abstract class Failure {
 //   abstract code: string;
 // }
 interface ContextSession extends Session {
-  role?: string;
+  user?: {
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    role?: string | null
+  }
 }
 export type Context = {
   session: ContextSession | null;

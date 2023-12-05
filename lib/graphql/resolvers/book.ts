@@ -5,10 +5,6 @@ import {
   Info,
   Int,
   Mutation,
-  Args,
-  Ctx,
-  InputType,
-  Field,
 } from "type-graphql";
 import {
   Cursor,
@@ -26,12 +22,10 @@ import {
 import { match } from "effect/Exit";
 import { CREATE_BOOK_HANDLER, GET_BOOKS_HANDLER } from "@/lib/constants";
 import { inject, injectable } from "tsyringe";
-// import type { Context } from "@/lib/utilities";
 import {
   BookConnection, CreateBookInput, CreateBookPayload,
 } from "@/lib/graphql";
 import { Book } from "@/lib/models";
-// import { CreateBookInput, CreateBookPayload } from "../types";
 
 
 @Resolver()
