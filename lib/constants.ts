@@ -1,4 +1,4 @@
-import { RegistryType } from "@/lib/utilities";
+import { FailureInformationType, RegistryType } from "@/lib/utilities";
 
 // Service
 export const CONTEXT: RegistryType<"CONTEXT"> = "CONTEXT";
@@ -18,5 +18,15 @@ export const CREATE_USER_HANDLER: RegistryType<"CREATE_USER_HANDLER"> =
 
 // Failures
 
-export const EMAIL_ALREADY_EXISTS = "Email already registered";
-export const USER_NOT_FOUND = "User not found";
+export const EMAIL_ALREADY_EXISTS: FailureInformationType<"EMAIL_ALREADY_EXISTS"> =
+  {
+    code: "EMAIL_ALREADY_EXISTS",
+    message: "Email already registered",
+    type: "BUSINESS_FAILURE",
+  };
+
+export const USER_NOT_FOUND: FailureInformationType<"USER_NOT_FOUND"> = {
+  code: "USER_NOT_FOUND",
+  message: "User not found",
+  type: "BUSINESS_FAILURE",
+};

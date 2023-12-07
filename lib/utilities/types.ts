@@ -7,11 +7,11 @@ import { ISODateString, Session } from "next-auth";
 // }
 interface ContextSession extends Session {
   user?: {
-    name?: string | null
-    email?: string | null
-    image?: string | null
-    role?: string | null
-  }
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string | null;
+  };
 }
 export type Context = {
   session: ContextSession | null;
@@ -20,6 +20,13 @@ export type Context = {
 export type Fail = string;
 
 export type RegistryType<T extends string> = T;
+
+export type FailureType = "BUSINESS_FAILURE"
+export type FailureInformationType<T extends string> = {
+  code: T;
+  message: string;
+  type?: FailureType;
+};
 
 export interface IHandler {
   handle: Function;

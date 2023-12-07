@@ -1,8 +1,9 @@
 import { Field, InputType, ObjectType } from "type-graphql";
 import type { IConnection, ICursor, IEdge, INode } from "@/lib/utilities";
-import { PageInfo,Cursor } from "@/lib/utilities";
+import { PageInfo, Cursor } from "@/lib/utilities";
 import { Book } from "@/lib/models";
 import { Length } from "class-validator";
+import { Roles } from "../models/enums";
 
 @InputType()
 export class CreateBookInput {
@@ -15,7 +16,7 @@ export class CreateBookInput {
 }
 
 @ObjectType()
-export class CreateBookPayload{
+export class CreateBookPayload {
   @Field()
   id!: string;
   @Field()
@@ -37,26 +38,24 @@ class BookNode {
   id!: string;
   @Field()
   title?: string;
-  @Field(of=> Author)
+  @Field((of) => Author)
   author!: Author;
 }
 
 @ObjectType()
 class BookEdge implements IEdge<BookNode> {
-  @Field(of=> Cursor)
+  @Field((of) => Cursor)
   cursor!: ICursor;
-  @Field(of=> BookNode)
+  @Field((of) => BookNode)
   node!: BookNode;
 }
 @ObjectType()
 export class BookConnection implements IConnection<BookEdge> {
-  @Field(of=> [BookEdge])
+  @Field((of) => [BookEdge])
   edges!: BookEdge[];
-  @Field(of=> PageInfo)
+  @Field((of) => PageInfo)
   pageInfo!: PageInfo;
 }
-
-
 
 @ObjectType()
 export class Role {
@@ -82,6 +81,8 @@ export class CreateUserInput {
   @Field()
   // @Length(8)
   password!: string;
+  @Field((of) => Roles)
+  roleId!: Roles;
 }
 
 @ObjectType()
@@ -90,7 +91,39 @@ export class CreateUserPayload {
   id!: string;
   @Field()
   email!: string;
-  @Field((of)=> Role)
+  @Field((of) => Role)
+  role!: Role;
+  @Field()
+  name!: string;
+  @Field()
+  surname!: string;
+
+}
+
+
+@InputType()
+export class SignUpInput {
+  @Field()
+  // @IsEmail()
+  email!: string;
+  @Field()
+  // @Length(3, 50)
+  name!: string;
+  @Field()
+  // @Length(3, 50)
+  surname!: string;
+  @Field()
+  // @Length(8)
+  password!: string;
+}
+
+@ObjectType()
+export class SignUpPayload {
+  @Field()
+  id!: string;
+  @Field()
+  email!: string;
+  @Field((of) => Role)
   role!: Role;
   @Field()
   name!: string;

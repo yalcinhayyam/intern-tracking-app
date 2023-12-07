@@ -1,4 +1,4 @@
-import { EmptyObject, Projection } from "@/core";
+import { EmptyObject, Projection } from "@/lib/utilities";
 import { GraphQLResolveInfo } from "graphql";
 import graphqlFields from "graphql-fields";
 
@@ -22,7 +22,7 @@ export const fieldSelector = <T>(data: GraphQLResolveInfo): Projection<T> => {
       return result;
     }
 
-    keys.forEach((key) => {
+    filterTypeName(keys).forEach((key) => {
       result[key] = traverse(obj[key] as EmptyObject);
     });
 
@@ -32,6 +32,10 @@ export const fieldSelector = <T>(data: GraphQLResolveInfo): Projection<T> => {
   return traverse(graphqlFields(data)) as Projection<T>;
 };
 
+function filterTypeName(keys: string[]) {
+  const TYPE_NAME = "__typename";
+  return keys.filter((key) => key !== TYPE_NAME);
+}
 function isConnectionType<T>(value: any): value is { edges: { node: T } } {
   if (typeof value !== "object") return false;
   const keys = Object.keys(value);

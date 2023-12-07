@@ -9,7 +9,36 @@ import { useDispatch, useSelector } from "react-redux";
 import { WiAlien } from "react-icons/wi";
 import FileUploader from "@/lib/components/FileUploader";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useAxiosQuery } from "@/lib/utilities/client";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_BOOKS = gql`
+  query GetBooks{
+    books(first: 3) {
+      edges {
+        node {
+          title
+        }
+      }
+    }
+  }
+`;
+
 export default function Home() {
+  {
+    const { loading, error, data } = useQuery(GET_BOOKS);
+    console.log("🚀 ~ file: page.tsx:28 ~ Home ~ error:", error);
+    console.log("🚀 ~ file: page.tsx:28 ~ Home ~ data:", data);
+  }
+
+  const { data, isLoading } = useAxiosQuery<{ a: number }>("/foo");
+  if (typeof window !== "undefined") {
+    if (!isLoading) {
+      console.log("🚀 ~ file: page.tsx:17 ~ Home ~ data:", data?.a);
+    }
+  }
+
   const [origin, setOrigin] = useState<string | undefined>(undefined);
   const router = useRouter();
   const count = useAppSelector((state) => state.counter.count);
@@ -18,7 +47,7 @@ export default function Home() {
   useEffect(() => {
     // console.log(path);
     setOrigin(location.origin);
-    console.log(location.origin);
+    console.log({ locationOrigin: location.origin });
   }, []);
   if (false)
     return (
@@ -56,8 +85,6 @@ export default function Home() {
   );
 }
 
-import { useSession, signIn, signOut } from "next-auth/react";
-import { convert } from "@/lib/utilities/converter";
 function Component() {
   const { data: session } = useSession();
   if (session) {
@@ -76,4 +103,4 @@ function Component() {
   );
 }
 
-console.log(convert(10));
+// console.log(convert(10));

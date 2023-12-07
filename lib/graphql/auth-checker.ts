@@ -8,7 +8,7 @@ export class AuthChecker implements AuthCheckerInterface<Context> {
     { root, args, context, info }: ResolverData<Context>,
     roles: string[]
   ): boolean {
-    console.log(context.session,roles);
+    // console.log(context.session,roles);
     if (context.session == null) return false;
     if (context.session.user == null) return false;
     if (roles == null || !roles.some((role) => true)) return true;

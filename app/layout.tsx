@@ -1,11 +1,21 @@
-import "reflect-metadata"
+import "reflect-metadata";
 import Nav from "@/lib/components/Nav";
 import ReduxProvider from "@/lib/components/ReduxProvider";
 import "./globals.scss";
 import { CounterContextProvider } from "@/lib/context/counter";
-import Provider from "@/lib/components/SessionProvider";
+import { SessionProvider } from "@/lib/components/SessionProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/utilities";
+import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
+import { ApolloProvider } from "@/lib/utilities/client";
+
+
+const __DEV__  = process.env.NODE_ENV !== "production"
+if (__DEV__) {  // Adds messages only in a dev environment
+  loadDevMessages();
+  loadErrorMessages();
+}
+
 
 export const metadata = {
   title: "Next.js",
@@ -19,19 +29,21 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
   return (
-    <Provider session={session}>
-      <CounterContextProvider>
-        <ReduxProvider>
-          <html lang="en">
-            {/* <html lang="en" className={"dark"}> */}
-            <body>
-              <Nav />
-              {/* {children} */}
-              {children}
-            </body>
-          </html>
-        </ReduxProvider>
-      </CounterContextProvider>
-    </Provider>
+    <SessionProvider session={session}>
+      <ApolloProvider>
+        <CounterContextProvider>
+          <ReduxProvider>
+            <html lang="en">
+              {/* <html lang="en" className={"dark"}> */}
+              <body>
+                <Nav />
+                {/* {children} */}
+                {children}
+              </body>
+            </html>
+          </ReduxProvider>
+        </CounterContextProvider>
+      </ApolloProvider>
+    </SessionProvider>
   );
 }

@@ -1,4 +1,4 @@
-
+import "reflect-metadata"
 import {
   CREATE_BOOK_HANDLER,
   CREATE_USER_HANDLER,

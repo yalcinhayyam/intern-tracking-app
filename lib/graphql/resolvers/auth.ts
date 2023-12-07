@@ -2,12 +2,13 @@ import { Arg, Resolver, Mutation } from "type-graphql";
 import { AbstractHandler } from "@/lib/utilities";
 import { CreateUserParams, CreateUserResult } from "@/lib/use-cases";
 import { match } from "effect/Exit";
-import { CREATE_BOOK_HANDLER, CREATE_USER_HANDLER } from "@/lib/constants";
+import { CREATE_USER_HANDLER } from "@/lib/constants";
 import { inject, injectable } from "tsyringe";
 import {
-  CreateUserInput,
-  CreateUserPayload,
+  SignUpInput,
+  SignUpPayload
 } from "@/lib/graphql";
+import { Roles } from "@/lib/models/enums";
 
 @Resolver()
 @injectable()
@@ -20,12 +21,12 @@ export class AuthResolver {
     >
   ) {}
 
-  @Mutation((returns) => CreateUserPayload, { nullable: true })
+  @Mutation((returns) => SignUpPayload, { nullable: true })
   async signUp(
-    @Arg("input", (of) => CreateUserInput, { validate: true })
-    input: CreateUserInput
-  ): Promise<CreateUserPayload | null> {
-    return match(await this.createUser.handle(input), {
+    @Arg("input", (of) => SignUpInput, { validate: true })
+    input: SignUpInput
+  ): Promise<SignUpPayload | null> {
+    return match(await this.createUser.handle({...input,roleId : Roles.USER}), {
       onSuccess: (value) => value,
       onFailure: () => null,
     });

@@ -1,0 +1,10 @@
+### Register
+POST http://localhost:3000/api/register
+Content-Type: application/json
+
+{
+    "name": "Hayyam Nazım",
+    "surname": "Yalçın",
+    "email": "hayyamyalcin@gmail.com",
+    "password": "123456"
+}

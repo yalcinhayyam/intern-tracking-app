@@ -1,15 +1,16 @@
+"use client"
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider,
+  ApolloProvider as Provider,
   gql,
 } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "https://flyby-router-demo.herokuapp.com/",
+  uri: "/api/graphql",
   cache: new InMemoryCache(),
 });
 
-function Provider({ children }: { children: React.ReactNode }) {
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+export function ApolloProvider({ children }: { children: React.ReactNode }) {
+  return <Provider client={client}>{children}</Provider>;
 }

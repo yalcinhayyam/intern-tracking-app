@@ -24,6 +24,7 @@ export class GetBooksHandler
   ];
   constructor(@inject(PRISMA_CLIENT) private readonly prisma: PrismaClient) {}
   async handle(args: GetBooksParams): Result<GetBooksResult> {
+    // console.log(args)
     var books = await this.prisma.book.findMany({
       ...query({ ...args, orderBy: "asc" }),
       where: {},

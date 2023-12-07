@@ -1,4 +1,4 @@
-import { Cursor, Projection } from "@/core";
+import { Cursor, Projection } from "@/lib/utilities";
 
 export const query = <T>({
   first,

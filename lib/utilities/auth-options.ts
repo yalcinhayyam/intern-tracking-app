@@ -10,6 +10,10 @@ import { isSuccess } from "effect/Exit";
 
 export const authOptions: AuthOptions = {
   callbacks: {
+    redirect: async ({ url, baseUrl }) => {
+      // return Promise.resolve(url);
+      return baseUrl
+    },
     async jwt({ token, account, user }: any) {
       if (user) token.role = user.role;
       return token;
@@ -21,7 +25,8 @@ export const authOptions: AuthOptions = {
   },
 
   pages: {
-    // signIn: "/auth/signin",
+    signIn: "/auth/signIn",
+    newUser: "/auth/signUp",
   },
   secret: process.env.JWT_SECRET,
   providers: [
@@ -33,7 +38,8 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log(credentials)
+        console.log("🚀 ~ file: auth-options.ts:40 ~ authorize ~ credentials:", credentials)
+        // console.log(credentials)
         // if (credentials?.username) {
         //   return await Promise.resolve({
         //     id: "1",
@@ -53,7 +59,7 @@ export const authOptions: AuthOptions = {
 
           if (foundUser) {
             const user = result.value;
-            console.log("User Exists");
+            // console.log("User Exists");
             const match = await bcrypt.compare(
               credentials.password,
               user.hash.toString("utf-8")

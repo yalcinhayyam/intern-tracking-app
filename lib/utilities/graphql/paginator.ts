@@ -4,7 +4,7 @@ export const paginator = <T>(
   items: ({ [K in keyof T]?: T[K] } & { id: string })[],
   [first, after]: [number, Cursor | null | undefined]
 ): IConnection<T> => {
-  console.log(items)
+  // console.log(items)
   const hasNextPage = items.length > first;
   const edges = hasNextPage ? items.slice(0, first) : items;
   const endCursor = edges.length > 0 ? edges[edges.length - 1].id : undefined;
