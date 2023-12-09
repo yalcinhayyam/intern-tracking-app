@@ -1,7 +1,9 @@
-import "reflect-metadata"
+import "reflect-metadata";
 import {
+  CONTEXT,
   CREATE_BOOK_HANDLER,
   CREATE_USER_HANDLER,
+  DATE_TIME_PROVIDER,
   GET_BOOKS_HANDLER,
   GET_USER_HANDLER,
   LOGGER,
@@ -11,7 +13,12 @@ import {
 import { container, injectable } from "tsyringe";
 
 import { PrismaClient as Client } from "@prisma/client";
-import { ConsoleLogger, InjectorFactory } from "@/lib/utilities";
+import {
+  ConsoleLogger,
+  Context,
+  InjectorFactory,
+  ValueProvider,
+} from "@/lib/utilities";
 import {
   CreateBookHandler,
   CreateUserHandler,
@@ -27,11 +34,47 @@ export class PrismaClient extends Client {}
 // // container.register(PRISMA_CLIENT, PrismaClient);
 // container.registerInstance(PRISMA_CLIENT, client);
 
+export class ContextValueProvider implements ValueProvider<Context> {
+  constructor(private _value: Context) {}
+
+  update = (value: Context) => {
+    this._value = value;
+  };
+  get value(): Context {
+    if (!this._value) {
+      this._value = {
+        session: null,
+      };
+    }
+    return this._value;
+  }
+}
+
+
+
+export interface IDateTimeProvider {
+  get now(): Date;
+}
+
+class DateTimeProvider implements IDateTimeProvider {
+  get now(): Date {
+    return new Date(Date.now());
+  }
+}
+
+
+container.registerInstance<ValueProvider<Context>>(
+  CONTEXT,
+  new ContextValueProvider({
+    session: null,
+  })
+);
 
 // Services
 container.register(PRISMA_CLIENT, PrismaClient);
 container.register(LOGGER, ConsoleLogger);
 container.register(USER_SERVICE, UserService);
+container.register(DATE_TIME_PROVIDER, DateTimeProvider);
 
 // Book
 container.register(GET_BOOKS_HANDLER, GetBooksHandler);

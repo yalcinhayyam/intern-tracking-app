@@ -1,9 +1,14 @@
 import { Field, InputType, ObjectType } from "type-graphql";
 import type { IConnection, ICursor, IEdge, INode } from "@/lib/utilities";
 import { PageInfo, Cursor } from "@/lib/utilities";
-import { Book } from "@/lib/models";
 import { Length } from "class-validator";
 import { Roles } from "../models/enums";
+import { registerEnumType } from "type-graphql";
+
+registerEnumType(Roles, {
+  name: "Roles", // this one is mandatory
+  description: "Role Id Management", // this one is optional
+});
 
 @InputType()
 export class CreateBookInput {
@@ -81,6 +86,7 @@ export class CreateUserInput {
   @Field()
   // @Length(8)
   password!: string;
+
   @Field((of) => Roles)
   roleId!: Roles;
 }
@@ -97,9 +103,7 @@ export class CreateUserPayload {
   name!: string;
   @Field()
   surname!: string;
-
 }
-
 
 @InputType()
 export class SignUpInput {

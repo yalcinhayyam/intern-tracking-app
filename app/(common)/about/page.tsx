@@ -1,6 +1,6 @@
 "use client";
 
-import { CounterContext } from "@/lib/context";
+import { CounterContext } from "@/lib/context-api";
 import { useAppSelector } from "@/lib/redux";
 import { useContext } from "react";
 

@@ -12,6 +12,11 @@ interface HandleEither<Type, Args> {
 interface Handle<Type, Args> {
   (cls: AbstractHandler<Type, Args>): (args: Args) => Promise<Exit<Fail, Type>>;
 }
+
+export interface ValueProvider<T> {
+  get value(): T;
+  update: (value: T) => void;
+}
 class Injector {
   constructor(private readonly _container: DependencyContainer) {}
   private handle =
@@ -33,6 +38,10 @@ class Injector {
 
   service = <Type>(token: InjectionToken<Type>): Type =>
     this.container.resolve<Type>(token);
+
+  provider = <Type>(
+    token: InjectionToken<ValueProvider<Type>>
+  ): ValueProvider<Type> => this.container.resolve<ValueProvider<Type>>(token);
 }
 
 export class InjectorFactory {

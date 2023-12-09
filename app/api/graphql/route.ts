@@ -8,6 +8,7 @@ import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { Cursor, CursorScalar, authOptions } from "@/lib/utilities";
 import { AuthChecker } from "@/lib/graphql/auth-checker";
+import { CONTEXT } from "@/lib/constants";
 
 const schema = await buildSchema({
   resolvers: [BookResolver, UserResolver, AuthResolver],
@@ -24,6 +25,7 @@ const server = new ApolloServer<Context>({
 const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
   context: async (req, res) => {
     const session = await getServerSession(authOptions);
+    injector.provider<Context>(CONTEXT).update({ session });
     return { req, res, session };
   },
 });

@@ -2,7 +2,7 @@ import "reflect-metadata";
 import Nav from "@/lib/components/Nav";
 import ReduxProvider from "@/lib/components/ReduxProvider";
 import "./globals.scss";
-import { CounterContextProvider } from "@/lib/context/counter";
+import { CounterContextProvider } from "@/lib/context-api/counter";
 import { SessionProvider } from "@/lib/components/SessionProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/utilities";
@@ -36,7 +36,6 @@ export default async function RootLayout({
             <html lang="en">
               {/* <html lang="en" className={"dark"}> */}
               <body>
-                <Nav />
                 {/* {children} */}
                 {children}
               </body>

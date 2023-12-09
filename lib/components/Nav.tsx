@@ -16,7 +16,7 @@ import {
 import NextLink from "next/link";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux";
-import { CounterContext } from "@/lib/context";
+import { CounterContext } from "@/lib/context-api";
 // import {AcmeLogo} from "./AcmeLogo.jsx";
 
 export default function Nav() {

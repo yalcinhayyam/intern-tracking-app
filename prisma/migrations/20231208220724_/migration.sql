@@ -21,7 +21,7 @@ CREATE TABLE "User" (
     "hash" BLOB NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
     "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "roleId" INTEGER NOT NULL,
     CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role" ("id") ON DELETE RESTRICT ON UPDATE CASCADE

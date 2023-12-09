@@ -1,5 +1,5 @@
 "use client";
-import { CounterContext, CounterContextProvider } from "@/lib/context";
+import { CounterContext, CounterContextProvider } from "@/lib/context-api";
 import { useAppDispatch, useAppSelector, incremented } from "@/lib/redux";
 import { Button } from "@nextui-org/react";
 import Image from "next/image";
@@ -12,9 +12,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useAxiosQuery } from "@/lib/utilities/client";
 import { gql, useQuery } from "@apollo/client";
+import Nav from "@/lib/components/Nav";
 
 const GET_BOOKS = gql`
-  query GetBooks{
+  query GetBooks {
     books(first: 3) {
       edges {
         node {
@@ -60,20 +61,22 @@ export default function Home() {
       )
     );
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Component />
-      <FileUploader />
-      <Link href={"/about"}>About</Link>
-      Redux :{" "}
-      <Button onClick={() => dispatch(incremented())}> {count.value}</Button>
-      Context Api :
-      <Button onClick={() => context.setCount((prev: number) => prev + 1)}>
-        {context.count}
-      </Button>
-      {/* <div className="card h-80 bg-[#444]"></div> */}
-      <h1 className="text-red-500">ok</h1>
-      <WiAlien />
-      {/* <Image
+    <>
+      <Nav></Nav>
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <Component />
+        {/* <FileUploader /> */}
+        <Link href={"/about"}>About</Link>
+        Redux :{" "}
+        <Button onClick={() => dispatch(incremented())}> {count.value}</Button>
+        Context Api :
+        <Button onClick={() => context.setCount((prev: number) => prev + 1)}>
+          {context.count}
+        </Button>
+        {/* <div className="card h-80 bg-[#444]"></div> */}
+        <h1 className="text-red-500">ok</h1>
+        <WiAlien />
+        {/* <Image
         className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
         src="/next.svg"
         alt="Next.js Logo"
@@ -81,7 +84,8 @@ export default function Home() {
         height={37}
         priority
       /> */}
-    </main>
+      </main>
+    </>
   );
 }
 

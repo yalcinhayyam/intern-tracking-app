@@ -1,6 +1,6 @@
 import { Either } from "effect/Either";
 import { Exit } from "effect/Exit";
-import { ISODateString, Session } from "next-auth";
+import { Session } from "next-auth";
 
 // export abstract class Failure {
 //   abstract code: string;
@@ -21,7 +21,9 @@ export type Fail = string;
 
 export type RegistryType<T extends string> = T;
 
-export type FailureType = "BUSINESS_FAILURE"
+export type EmptyArgs = {};
+
+export type FailureType = "BUSINESS_FAILURE";
 export type FailureInformationType<T extends string> = {
   code: T;
   message: string;
@@ -31,6 +33,7 @@ export type FailureInformationType<T extends string> = {
 export interface IHandler {
   handle: Function;
 }
+
 export interface Callable<Type, Args> {
   (args: Args): Result<Type>;
 }
