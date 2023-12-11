@@ -24,7 +24,14 @@ export const authOptions: AuthOptions = {
       return session;
     },
   },
-
+  // session : {
+  //   strategy: "jwt" 
+  // },
+  jwt: {
+    maxAge: Number(process.env.JWT_MAX_AGE) || 30 * 24 * 60 * 60,
+    // decode custom decoder
+    // encode custom encoder
+  },
   pages: {
     signIn: "/auth/signIn",
     newUser: "/auth/signUp",

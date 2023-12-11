@@ -64,7 +64,7 @@ export default function Home() {
     <>
       <Nav></Nav>
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <Component />
+        <AuthComponent />
         {/* <FileUploader /> */}
         <Link href={"/about"}>About</Link>
         Redux :{" "}
@@ -89,7 +89,7 @@ export default function Home() {
   );
 }
 
-function Component() {
+function AuthComponent() {
   const { data: session } = useSession();
   if (session) {
     return (

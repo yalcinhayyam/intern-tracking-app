@@ -5,6 +5,12 @@ import { Session } from "next-auth";
 // export abstract class Failure {
 //   abstract code: string;
 // }
+
+
+export interface IDateTimeProvider {
+  get now(): Date;
+}
+
 interface ContextSession extends Session {
   user?: {
     name?: string | null;

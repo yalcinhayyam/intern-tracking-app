@@ -13,9 +13,15 @@ interface Handle<Type, Args> {
   (cls: AbstractHandler<Type, Args>): (args: Args) => Promise<Exit<Fail, Type>>;
 }
 
-export interface ValueProvider<T> {
-  get value(): T;
-  update: (value: T) => void;
+export abstract class AbstractValueProvider<T> {
+  constructor(protected _value: T) {}
+  get value(): T {
+    return this._value;
+  }
+  set setValue(value: T) {
+    this._value = value;
+  }
+  changeValue = (value: T) => (this.setValue = value);
 }
 class Injector {
   constructor(private readonly _container: DependencyContainer) {}
@@ -40,8 +46,9 @@ class Injector {
     this.container.resolve<Type>(token);
 
   provider = <Type>(
-    token: InjectionToken<ValueProvider<Type>>
-  ): ValueProvider<Type> => this.container.resolve<ValueProvider<Type>>(token);
+    token: InjectionToken<AbstractValueProvider<Type>>
+  ): AbstractValueProvider<Type> =>
+    this.container.resolve<AbstractValueProvider<Type>>(token);
 }
 
 export class InjectorFactory {

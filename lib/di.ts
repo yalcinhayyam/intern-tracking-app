@@ -17,7 +17,8 @@ import {
   ConsoleLogger,
   Context,
   InjectorFactory,
-  ValueProvider,
+  AbstractValueProvider,
+  IDateTimeProvider,
 } from "@/lib/utilities";
 import {
   CreateBookHandler,
@@ -26,35 +27,14 @@ import {
   GetUserHandler,
 } from "./use-cases";
 import { UserService } from "./services";
-@injectable()
-export class PrismaClient extends Client {}
 
 // var client = new PrismaClient();
 // // await client.$connect()
 // // container.register(PRISMA_CLIENT, PrismaClient);
 // container.registerInstance(PRISMA_CLIENT, client);
-
-export class ContextValueProvider implements ValueProvider<Context> {
-  constructor(private _value: Context) {}
-
-  update = (value: Context) => {
-    this._value = value;
-  };
-  get value(): Context {
-    if (!this._value) {
-      this._value = {
-        session: null,
-      };
-    }
-    return this._value;
-  }
-}
-
-
-
-export interface IDateTimeProvider {
-  get now(): Date;
-}
+@injectable()
+export class PrismaClient extends Client {}
+export class ContextValueProvider extends AbstractValueProvider<Context> {}
 
 class DateTimeProvider implements IDateTimeProvider {
   get now(): Date {
@@ -62,8 +42,7 @@ class DateTimeProvider implements IDateTimeProvider {
   }
 }
 
-
-container.registerInstance<ValueProvider<Context>>(
+container.registerInstance<AbstractValueProvider<Context>>(
   CONTEXT,
   new ContextValueProvider({
     session: null,
@@ -90,7 +69,5 @@ container.register(CREATE_USER_HANDLER, CreateUserHandler);
 // );
 
 export const injector = InjectorFactory.create(container);
-
-// console.log(await (container.resolve(GET_USER_HANDLER) as any)({ email: "" }));
 
 export { container };

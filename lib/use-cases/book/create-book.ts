@@ -40,3 +40,15 @@ export class CreateBookHandler
     return z.string().min(3).safeParse(title).success;
   }
 }
+
+interface IEntity {
+  
+}
+
+function EntityTypeGenerator() {
+  return class implements IEntity {};
+}
+
+class Book extends EntityTypeGenerator() {
+
+}

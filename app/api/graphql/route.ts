@@ -25,7 +25,7 @@ const server = new ApolloServer<Context>({
 const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
   context: async (req, res) => {
     const session = await getServerSession(authOptions);
-    injector.provider<Context>(CONTEXT).update({ session });
+    injector.provider<Context>(CONTEXT).changeValue({ session });
     return { req, res, session };
   },
 });
