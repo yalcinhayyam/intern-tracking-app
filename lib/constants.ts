@@ -35,10 +35,19 @@ export const EMAIL_OR_PASSWORD_INCORRECT: FailureInformationType<"EMAIL_OR_PASSW
     "Email or Password incorrect"
   );
 
+export const CONTENT_LENGTH = (
+  argument: string,
+  length: number
+): FailureInformationType<"CONTENT_LENGTH"> =>
+  createFailureInformationType(
+    "CONTENT_LENGTH",
+    `Argument ${argument} must longer than ${length} character`
+  );
+
+type FailureType = "CONTENT_LENGTH";
 
 
-  
-function createFailureInformationType<T extends string>(
+export function createFailureInformationType<T extends FailureType | string>(
   code: T,
   message: string,
   type?: "BUSINESS_FAILURE"

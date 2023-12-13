@@ -1,16 +1,8 @@
 import { DependencyContainer, InjectionToken } from "tsyringe";
-import { AbstractHandler, Fail } from "@/lib/utilities";
-import { Either } from "effect/Either";
-import { Exit } from "effect/Exit";
-
-interface HandleEither<Type, Args> {
-  (cls: AbstractHandler<Type, Args>): (
-    args: Args
-  ) => Promise<Either<Fail, Type>>;
-}
+import { AbstractHandler, Result } from "@/lib/utilities";
 
 interface Handle<Type, Args> {
-  (cls: AbstractHandler<Type, Args>): (args: Args) => Promise<Exit<Fail, Type>>;
+  (cls: AbstractHandler<Type, Args>): (args: Args) => Result<Type>;
 }
 
 export abstract class AbstractValueProvider<T> {
@@ -37,7 +29,7 @@ class Injector {
 
   inject = <Type, Args>(
     token: InjectionToken<AbstractHandler<Type, Args>>
-  ): ((args: Args) => Promise<Exit<Fail, Type>>) =>
+  ): ((args: Args) => Result<Type>) =>
     this.handle<Type, Args>()(
       this.container.resolve<AbstractHandler<Type, Args>>(token)
     );

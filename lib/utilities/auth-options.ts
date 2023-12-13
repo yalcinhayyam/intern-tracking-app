@@ -5,9 +5,9 @@ import bcrypt from "bcrypt";
 
 import { EMAIL_OR_PASSWORD_INCORRECT, GET_USER_HANDLER } from "@/lib/constants";
 import { GetUserParams } from "@/lib/use-cases";
-import { Callable, EmptyArgs, Failure, Result, Success } from "@/lib/utilities";
+import { Callable, Left, Result, Right } from "@/lib/utilities";
 import { IUser } from "@/lib/models";
-import { isSuccess } from "effect/Exit";
+import { isRight } from "effect/Either";
 
 export const authOptions: AuthOptions = {
   callbacks: {
@@ -25,7 +25,7 @@ export const authOptions: AuthOptions = {
     },
   },
   // session : {
-  //   strategy: "jwt" 
+  //   strategy: "jwt"
   // },
   jwt: {
     maxAge: Number(process.env.JWT_MAX_AGE) || 30 * 24 * 60 * 60,
@@ -54,14 +54,14 @@ export const authOptions: AuthOptions = {
           email: credentials?.email,
         });
 
-        const foundUser = isSuccess(result);
+        const foundUser = isRight(result);
         if (!foundUser) {
           return null;
         }
 
-        const user = result.value;
+        const user = result.right;
 
-        const match = isSuccess(
+        const match = isRight(
           await comparePassword({
             password: credentials.password,
             hash: user.hash,
@@ -96,7 +96,7 @@ const comparePassword: Callable<
     args.hash.toString("utf-8")
   );
   if (!match) {
-    return Failure(EMAIL_OR_PASSWORD_INCORRECT);
+    return Left(EMAIL_OR_PASSWORD_INCORRECT);
   }
-  return Success(true, comparePassword.name);
+  return Right(true, comparePassword.name);
 };

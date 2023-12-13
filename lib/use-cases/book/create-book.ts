@@ -1,5 +1,13 @@
-import { PRISMA_CLIENT } from "@/lib/constants";
-import { Failure, AbstractHandler, Success, Result } from "@/lib/utilities";
+import {
+  PRISMA_CLIENT,
+  CONTENT_LENGTH,
+} from "@/lib/constants";
+import {
+  AbstractHandler,
+  Right,
+  Left,
+  Result,
+} from "@/lib/utilities";
 import { PrismaClient } from "@prisma/client";
 import { inject, injectable } from "tsyringe";
 import { z } from "zod";
@@ -13,6 +21,7 @@ export type CreateBookResult = {
   title: string;
   authorId: string;
 };
+
 @injectable()
 export class CreateBookHandler
   implements AbstractHandler<CreateBookResult, CreateBookParams>
@@ -20,7 +29,9 @@ export class CreateBookHandler
   constructor(@inject(PRISMA_CLIENT) private readonly prisma: PrismaClient) {}
   async handle(args: CreateBookParams): Result<CreateBookResult> {
     if (!this._titleLongerThan3Character(args.title)) {
-      return Failure("Title must longer than 3 character");
+      return Left(
+        CONTENT_LENGTH("Create Book Title", 3)
+      );
     }
 
     var result = this.prisma.book.create({
@@ -33,7 +44,7 @@ export class CreateBookHandler
         },
       },
     });
-    return Success(await result);
+    return Right(await result);
   }
 
   private _titleLongerThan3Character(title: string) {
@@ -41,14 +52,10 @@ export class CreateBookHandler
   }
 }
 
-interface IEntity {
-  
-}
+interface IEntity {}
 
 function EntityTypeGenerator() {
   return class implements IEntity {};
 }
 
-class Book extends EntityTypeGenerator() {
-
-}
+class Book extends EntityTypeGenerator() {}

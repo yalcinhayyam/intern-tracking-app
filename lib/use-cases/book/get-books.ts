@@ -1,4 +1,4 @@
-import { Success, Cursor, Projection, query } from "@/lib/utilities";
+import { Right, Cursor, Projection, query } from "@/lib/utilities";
 import type { Fail, AbstractHandler, Result } from "@/lib/utilities";
 import { PrismaClient } from "@prisma/client";
 import { PRISMA_CLIENT } from "@/lib/constants";
@@ -29,6 +29,6 @@ export class GetBooksHandler
       ...query({ ...args, orderBy: "asc" }),
       where: {},
     });
-    return Success(books);
+    return Right(books);
   }
 }

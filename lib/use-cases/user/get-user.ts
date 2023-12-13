@@ -1,6 +1,6 @@
 import { PRISMA_CLIENT, USER_NOT_FOUND } from "@/lib/constants";
 import { IUser } from "@/lib/models";
-import { AbstractHandler, Failure, Result, Success } from "@/lib/utilities";
+import { AbstractHandler, Left, Result, Right } from "@/lib/utilities";
 import { PrismaClient } from "@prisma/client";
 import { inject, injectable } from "tsyringe";
 
@@ -26,9 +26,9 @@ export class GetUserHandler
       },
     });
     if (!result) {
-      return Failure(USER_NOT_FOUND);
+      return Left(USER_NOT_FOUND);
     }
 
-    return Success(result);
+    return Right(result);
   }
 }

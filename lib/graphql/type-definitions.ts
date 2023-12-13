@@ -1,9 +1,45 @@
-import { Field, InputType, ObjectType } from "type-graphql";
-import type { IConnection, ICursor, IEdge, INode } from "@/lib/utilities";
+import { ClassType, Field, InputType, ObjectType } from "type-graphql";
+import type {
+  IConnection,
+  ICursor,
+  IEdge,
+  INode,
+  IPageInfo,
+} from "@/lib/utilities";
 import { PageInfo, Cursor } from "@/lib/utilities";
 import { Length } from "class-validator";
 import { Roles } from "../models/enums";
 import { registerEnumType } from "type-graphql";
+
+export function Result<TItem extends object>(TItemClass: ClassType<TItem>) {
+  @ObjectType()
+  abstract class ResultResponseClass {
+    @Field((type) => [TItemClass], { nullable: true })
+    data?: TItem;
+    @Field({ nullable: true })
+    error?: string;
+  }
+  return ResultResponseClass;
+}
+
+export function Paginate<T extends INode<T>>(TClass: ClassType<T>) {
+  @ObjectType()
+  class Edge<TNode> implements IEdge<TNode> {
+    @Field((of) => Cursor)
+    cursor!: ICursor;
+    @Field((of) => TClass)
+    node!: INode<TNode>;
+  }
+
+  @ObjectType()
+  abstract class Connection implements IConnection<T> {
+    @Field((type) => [TClass])
+    edges!: Edge<T>[];
+    @Field((of) => PageInfo)
+    pageInfo!: PageInfo;
+  }
+  return Connection;
+}
 
 registerEnumType(Roles, {
   name: "Roles", // this one is mandatory
@@ -134,3 +170,23 @@ export class SignUpPayload {
   @Field()
   surname!: string;
 }
+
+@ObjectType()
+export class ABC {
+  @Field()
+  id!: string;
+  @Field()
+  email!: string;
+  @Field((of) => Role)
+  role!: Role;
+  @Field()
+  name!: string;
+  @Field()
+  surname!: string;
+}
+
+@ObjectType()
+export class CreateBookPayloadResult extends Result(CreateBookPayload) {}
+
+@ObjectType()
+export class BookConnectionPaginated extends Paginate(BookNode) {}

@@ -6,7 +6,6 @@ import { Session } from "next-auth";
 //   abstract code: string;
 // }
 
-
 export interface IDateTimeProvider {
   get now(): Date;
 }
@@ -44,12 +43,7 @@ export interface Callable<Type, Args> {
   (args: Args): Result<Type>;
 }
 
-export type Result<Type> = Promise<Exit<Fail, Type>>;
-export type EitherResult<Type> = Promise<Either<Fail, Type>>;
-
-export abstract class AbstractHandlerEither<Type, Args> implements IHandler {
-  abstract handle(args: Args): EitherResult<Type>;
-}
+export type Result<Type> = Promise<Either<Fail, Type>>;
 
 export abstract class AbstractHandler<Type, Args> implements IHandler {
   abstract handle(args: Args): Result<Type>;

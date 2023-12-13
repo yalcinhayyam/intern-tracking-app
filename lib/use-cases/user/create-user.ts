@@ -3,7 +3,7 @@ import {
   PRISMA_CLIENT,
   USER_SERVICE,
 } from "@/lib/constants";
-import { Failure, Success, AbstractHandler, Result } from "@/lib/utilities";
+import { Left, Right, AbstractHandler, Result } from "@/lib/utilities";
 import { PrismaClient, Role } from "@prisma/client";
 import { inject, injectable } from "tsyringe";
 import { hash as createHash, genSalt } from "bcrypt";
@@ -37,7 +37,7 @@ export class CreateUserHandler
   ) {}
   async handle(args: CreateUserParams): Result<CreateUserResult> {
     if (await this.userService.emailExists(args.email)) {
-      return Failure(EMAIL_ALREADY_EXISTS);
+      return Left(EMAIL_ALREADY_EXISTS);
     }
     const hash = await this._createHash(args.password);
 
@@ -57,7 +57,7 @@ export class CreateUserHandler
         hash: Buffer.from(hash, "utf8"),
       },
     });
-    return Success(result);
+    return Right(result);
   }
   _createHash = async (password: string): Promise<string> => {
     return await createHash(password, await genSalt(10));

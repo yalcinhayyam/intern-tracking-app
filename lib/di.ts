@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {
   CONTEXT,
   CREATE_BOOK_HANDLER,
@@ -50,10 +49,10 @@ container.registerInstance<AbstractValueProvider<Context>>(
 );
 
 // Services
-container.register(PRISMA_CLIENT, PrismaClient);
-container.register(LOGGER, ConsoleLogger);
-container.register(USER_SERVICE, UserService);
-container.register(DATE_TIME_PROVIDER, DateTimeProvider);
+container.registerSingleton(PRISMA_CLIENT, PrismaClient);
+container.registerSingleton(LOGGER, ConsoleLogger);
+container.registerSingleton(USER_SERVICE, UserService);
+container.registerSingleton(DATE_TIME_PROVIDER, DateTimeProvider);
 
 // Book
 container.register(GET_BOOKS_HANDLER, GetBooksHandler);

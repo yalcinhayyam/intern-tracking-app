@@ -1,6 +1,7 @@
+import "reflect-metadata"
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { ApolloServer } from "@apollo/server";
-import { buildSchema } from "type-graphql";
+import { buildSchema, buildSchemaSync } from "type-graphql";
 import { injector } from "@/lib/di";
 import { BookResolver, UserResolver, AuthResolver } from "@/lib/graphql";
 import { Context } from "@/lib/utilities";
@@ -10,7 +11,7 @@ import { Cursor, CursorScalar, authOptions } from "@/lib/utilities";
 import { AuthChecker } from "@/lib/graphql/auth-checker";
 import { CONTEXT } from "@/lib/constants";
 
-const schema = await buildSchema({
+const schema = buildSchemaSync({
   resolvers: [BookResolver, UserResolver, AuthResolver],
   authChecker: AuthChecker,
   container: {

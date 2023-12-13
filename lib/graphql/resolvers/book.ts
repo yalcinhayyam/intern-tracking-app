@@ -1,11 +1,4 @@
-import {
-  Arg,
-  Resolver,
-  Query,
-  Info,
-  Int,
-  Mutation,
-} from "type-graphql";
+import { Arg, Resolver, Query, Info, Int, Mutation } from "type-graphql";
 import {
   Cursor,
   fieldSelector,
@@ -19,14 +12,18 @@ import {
   GetBooksParams,
   GetBooksResult,
 } from "@/lib/use-cases";
-import { match } from "effect/Exit";
+import { match } from "effect/Either";
 import { CREATE_BOOK_HANDLER, GET_BOOKS_HANDLER } from "@/lib/constants";
 import { inject, injectable } from "tsyringe";
 import {
-  BookConnection, CreateBookInput, CreateBookPayload,
+  BookConnection,
+  BookConnectionPaginated,
+  CreateBookInput,
+  CreateBookPayload,
+  CreateBookPayloadResult,
 } from "@/lib/graphql";
 import { Book } from "@/lib/models";
-
+import { GraphQLError } from "graphql";
 
 @Resolver()
 @injectable()
@@ -41,7 +38,7 @@ export class BookResolver {
     >
   ) {}
 
-  @Query(() => BookConnection)
+  @Query(() => BookConnectionPaginated)
   async books(
     @Info() info: any,
     @Arg("first", (of) => Int) first: number,
@@ -54,20 +51,20 @@ export class BookResolver {
         after,
       }),
       {
-        onSuccess: (value) => paginator<Book.IBook>(value, [first, after]),
-        onFailure: () => paginator<Book.IBook>([], [first, after]),
+        onRight: (value) => paginator<Book.IBook>(value, [first, after]),
+        onLeft: () => paginator<Book.IBook>([], [first, after]),
       }
     );
   }
 
-  @Mutation((returns) => CreateBookPayload, { nullable: true })
+  @Mutation((returns) => CreateBookPayloadResult, { nullable: true })
   async addBook(
     @Arg("input", (of) => CreateBookInput, { validate: true })
     input: CreateBookInput
-  ): Promise<CreateBookPayload | null> {
+  ): Promise<CreateBookPayload | GraphQLError | null> {
     return match(await this.createBook.handle(input), {
-      onSuccess: (value) => value,
-      onFailure: () => null,
+      onRight: (value) => value,
+      onLeft: (cause) => new GraphQLError(cause),
     });
   }
 }
