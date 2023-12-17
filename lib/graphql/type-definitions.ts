@@ -1,4 +1,4 @@
-import { ClassType, Field, InputType, ObjectType } from "type-graphql";
+import { ClassType, Field, InputType, ObjectType, createUnionType } from "type-graphql";
 import type {
   IConnection,
   ICursor,
@@ -20,21 +20,37 @@ export function Result<TItem extends object>(TItemClass: ClassType<TItem>) {
     error?: string;
   }
   return ResultResponseClass;
+
 }
 
-export function Paginate<T extends INode<T>>(TClass: ClassType<T>) {
+export function GenerateEdgeType<T extends INode<T>>(TClass: ClassType<T>) {
   @ObjectType()
-  class Edge<TNode> implements IEdge<TNode> {
+  abstract class Edge implements IEdge<T> {
     @Field((of) => Cursor)
     cursor!: ICursor;
     @Field((of) => TClass)
-    node!: INode<TNode>;
+    node!: T;
   }
 
+  return Edge;
+}
+
+export function Foo<T>(TEdge: ClassType<IEdge<T>>) {
   @ObjectType()
   abstract class Connection implements IConnection<T> {
-    @Field((type) => [TClass])
-    edges!: Edge<T>[];
+    @Field((type) => [TEdge])
+    edges!: IEdge<T>[];
+    @Field((of) => PageInfo)
+    pageInfo!: PageInfo;
+  }
+  return Connection;
+}
+
+export function Paginate<T>(TEdge: ClassType<IEdge<T>>) {
+  @ObjectType()
+  abstract class Connection implements IConnection<T> {
+    @Field((type) => [TEdge])
+    edges!: IEdge<T>[];
     @Field((of) => PageInfo)
     pageInfo!: PageInfo;
   }
@@ -49,10 +65,10 @@ registerEnumType(Roles, {
 @InputType()
 export class CreateBookInput {
   @Field()
-  @Length(3, 255)
+  // @Length(3, 255)
   author!: string;
   @Field()
-  @Length(3, 255)
+  // @Length(3, 255)
   title!: string;
 }
 
@@ -73,30 +89,30 @@ export class Author {
   @Field()
   name?: string;
 }
-@ObjectType()
-class BookNode {
-  @Field()
-  id!: string;
-  @Field()
-  title?: string;
-  @Field((of) => Author)
-  author!: Author;
-}
+// @ObjectType()
+// class BookNode {
+//   @Field()
+//   id!: string;
+//   @Field()
+//   title?: string;
+//   @Field((of) => Author)
+//   author!: Author;
+// }
 
-@ObjectType()
-class BookEdge implements IEdge<BookNode> {
-  @Field((of) => Cursor)
-  cursor!: ICursor;
-  @Field((of) => BookNode)
-  node!: BookNode;
-}
-@ObjectType()
-export class BookConnection implements IConnection<BookEdge> {
-  @Field((of) => [BookEdge])
-  edges!: BookEdge[];
-  @Field((of) => PageInfo)
-  pageInfo!: PageInfo;
-}
+// @ObjectType()
+// class BookEdge implements IEdge<BookNode> {
+//   @Field((of) => Cursor)
+//   cursor!: ICursor;
+//   @Field((of) => BookNode)
+//   node!: BookNode;
+// }
+// @ObjectType()
+// export class BookConnection implements IConnection<BookEdge> {
+//   @Field((of) => [BookEdge])
+//   edges!: BookEdge[];
+//   @Field((of) => PageInfo)
+//   pageInfo!: PageInfo;
+// }
 
 @ObjectType()
 export class Role {
@@ -172,21 +188,19 @@ export class SignUpPayload {
 }
 
 @ObjectType()
-export class ABC {
-  @Field()
-  id!: string;
-  @Field()
-  email!: string;
-  @Field((of) => Role)
-  role!: Role;
-  @Field()
-  name!: string;
-  @Field()
-  surname!: string;
-}
-
-@ObjectType()
 export class CreateBookPayloadResult extends Result(CreateBookPayload) {}
 
 @ObjectType()
-export class BookConnectionPaginated extends Paginate(BookNode) {}
+export class Book implements INode<Book> {
+  @Field()
+  id!: string;
+  @Field()
+  title?: string;
+  @Field((of) => Author)
+  author!: Author;
+}
+
+@ObjectType()
+export class BookEdge extends GenerateEdgeType(Book) {}
+@ObjectType()
+export class BookConnection extends Paginate(BookEdge) {}

@@ -17,7 +17,6 @@ import { CREATE_BOOK_HANDLER, GET_BOOKS_HANDLER } from "@/lib/constants";
 import { inject, injectable } from "tsyringe";
 import {
   BookConnection,
-  BookConnectionPaginated,
   CreateBookInput,
   CreateBookPayload,
   CreateBookPayloadResult,
@@ -38,7 +37,7 @@ export class BookResolver {
     >
   ) {}
 
-  @Query(() => BookConnectionPaginated)
+  @Query(() => BookConnection)
   async books(
     @Info() info: any,
     @Arg("first", (of) => Int) first: number,
@@ -57,7 +56,7 @@ export class BookResolver {
     );
   }
 
-  @Mutation((returns) => CreateBookPayloadResult, { nullable: true })
+  @Mutation((returns) => CreateBookPayload, { nullable: true })
   async addBook(
     @Arg("input", (of) => CreateBookInput, { validate: true })
     input: CreateBookInput

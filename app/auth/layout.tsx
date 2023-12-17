@@ -8,6 +8,9 @@
 // import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 // import { ApolloProvider } from "@/lib/utilities/client";
 
+import { useTranslation } from 'next-i18next'
+
+const { t } = useTranslation('footer')
 // const __DEV__  = process.env.NODE_ENV !== "production"
 // if (__DEV__) {  // Adds messages only in a dev environment
 //   loadDevMessages();
@@ -52,6 +55,7 @@ export default async function AuthLayout({
   return (
     <html lang="en">
       <body>
+        {useI}
         Auth Layout <hr />
         {children}
       </body>
