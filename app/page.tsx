@@ -13,6 +13,9 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useAxiosQuery } from "@/lib/utilities/client";
 import { gql, useQuery } from "@apollo/client";
 import Nav from "@/lib/components/Nav";
+import { useTranslation } from 'next-i18next'
+
+
 
 const GET_BOOKS = gql`
   query GetBooks {
@@ -39,6 +42,7 @@ export default function Home() {
       console.log("🚀 ~ file: page.tsx:17 ~ Home ~ data:", data?.a);
     }
   }
+const { t } = useTranslation('common')
 
   const [origin, setOrigin] = useState<string | undefined>(undefined);
   const router = useRouter();
@@ -62,6 +66,7 @@ export default function Home() {
     );
   return (
     <>
+      <h1>{t('title')}</h1>
       <Nav></Nav>
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <AuthComponent />
