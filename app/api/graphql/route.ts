@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { ApolloServer } from "@apollo/server";
-import { buildSchema, buildSchemaSync } from "type-graphql";
+import {  buildSchemaSync } from "type-graphql";
 import { injector } from "@/lib/di";
 import { BookResolver, UserResolver, AuthResolver } from "@/lib/graphql";
 import { Context, ILogger } from "@/lib/utilities";
@@ -25,6 +25,7 @@ function isEnableCriticalInformation(): boolean {
   );
 }
 const server = new ApolloServer<Context>({
+  
   formatError(formattedError, error) {
     const logger = injector.service<ILogger>(LOGGER);
     logger.error(error);
@@ -42,6 +43,7 @@ const server = new ApolloServer<Context>({
   schema,
 });
 const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
+  
   context: async (req, res) => {
     const session = await getServerSession(authOptions);
     injector.provider<Context>(CONTEXT).changeValue({ session });
@@ -50,3 +52,4 @@ const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
 });
 
 export { handler as GET, handler as POST };
+
