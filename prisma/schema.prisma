@@ -24,9 +24,9 @@ model Book {
 }
 
 model Author {
-  id   String @id @default(uuid())
-  name String
-  book Book?
+  id    String @id @default(uuid())
+  name  String
+  books Book[]
 }
 
 /// ----- Example ----
@@ -45,7 +45,7 @@ model User {
 
   isActive    Boolean      @default(true)
   isVerified  Boolean      @default(false)
-  roleId      Int          
+  roleId      Int
   role        Role         @relation(fields: [roleId], references: [id])
   contacts    Contact[]
   internships Internship[]

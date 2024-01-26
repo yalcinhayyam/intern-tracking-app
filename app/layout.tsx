@@ -12,7 +12,7 @@ import { ApolloProvider } from "@/lib/utilities/client";
 import { ProviderComposer } from "@/lib/context-api";
 import { Inter } from "next/font/google";
 import { NavBar } from "@/lib/components/NavBar";
-import { SideBar } from "@/lib/components/Sidebar";
+import { SideBar } from "@/lib/components/SideBar";
 import { Footer } from "@/lib/components/Footer";
 import NextUIProvider from "@/lib/components/NextUIProvider";
 
