@@ -30,3 +30,10 @@ npm i -D sass
 npx prisma migrate dev
 
 <!-- "@nextui-org/react": "^2.1.13", -->
+
+------ 
+changes
+
+layout
+pages
+etc check

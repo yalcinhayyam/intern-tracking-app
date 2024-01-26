@@ -1,6 +1,12 @@
 // npx prisma db seed
 import { PrismaClient } from "@prisma/client";
+import { genSalt, hash } from "bcrypt";
+
+const createHash = async (password: string): Promise<string> => {
+  return await hash(password, await genSalt(10));
+};
 const prisma = new PrismaClient();
+
 async function main() {
   const roles = [
     { id: 1, code: "ADMIN" },
@@ -40,7 +46,29 @@ async function main() {
       },
     });
   });
-  //   console.log({});
+  await prisma.user.upsert({
+    where: { email: "root@root" },
+    update: {
+      id: "root",
+      email: "root@root",
+      name: "root",
+      surname: "root",
+      isActive: true,
+      isVerified: true,
+      roleId: 1,
+      hash: Buffer.from(await createHash("root")),
+    },
+    create: {
+      id: "root",
+      email: "root@root",
+      name: "root",
+      surname: "root",
+      isActive: true,
+      isVerified: true,
+      roleId: 1,
+      hash: Buffer.from(await createHash("root")),
+    },
+  }); //   console.log({});
 }
 main()
   .then(async () => {
@@ -51,3 +79,5 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
+
+  
