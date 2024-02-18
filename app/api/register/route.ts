@@ -2,7 +2,7 @@ import { CREATE_USER_HANDLER } from "@/lib/constants";
 import { injector } from "@/lib/di";
 import { Roles } from "@/lib/models/enums";
 import { CreateUserResult, CreateUserParams } from "@/lib/use-cases";
-import { match } from "effect/Exit";
+import { match } from "effect/Either";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       surname,
     });
     return match(result, {
-      onSuccess(user) {
+      onRight(user) {
         return NextResponse.json({
           user: {
             name: user.name,
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           },
         });
       },
-      onFailure(cause) {
+      onLeft(cause) {
         return NextResponse.json(cause, { status: 401 });
       },
     });

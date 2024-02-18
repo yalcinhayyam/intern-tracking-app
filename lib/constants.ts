@@ -18,6 +18,9 @@ export const GET_USER_HANDLER: RegistryType<"GET_USER_HANDLER"> =
 export const CREATE_USER_HANDLER: RegistryType<"CREATE_USER_HANDLER"> =
   "CREATE_USER_HANDLER";
 
+export const CREATE_INTERNSHIP_HANDLER: RegistryType<"CREATE_INTERNSHIP_HANDLER"> =
+  "CREATE_INTERNSHIP_HANDLER";
+
 // Failures
 
 export const EMAIL_ALREADY_EXISTS: FailureInformationType<"EMAIL_ALREADY_EXISTS"> =
@@ -45,7 +48,6 @@ export const CONTENT_LENGTH = (
   );
 
 type FailureType = "CONTENT_LENGTH";
-
 
 export function createFailureInformationType<T extends FailureType | string>(
   code: T,

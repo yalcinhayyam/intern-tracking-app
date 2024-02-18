@@ -1,6 +1,8 @@
+import 'reflect-metadata'
 import {
   CONTEXT,
   CREATE_BOOK_HANDLER,
+  CREATE_INTERNSHIP_HANDLER,
   CREATE_USER_HANDLER,
   DATE_TIME_PROVIDER,
   GET_BOOKS_HANDLER,
@@ -21,6 +23,7 @@ import {
 } from "@/lib/utilities";
 import {
   CreateBookHandler,
+  CreateInternshipHandler,
   CreateUserHandler,
   GetBooksHandler,
   GetUserHandler,
@@ -61,6 +64,10 @@ container.register(CREATE_BOOK_HANDLER, CreateBookHandler);
 // User
 container.register(GET_USER_HANDLER, GetUserHandler);
 container.register(CREATE_USER_HANDLER, CreateUserHandler);
+
+// Internship
+
+container.register(CREATE_INTERNSHIP_HANDLER, CreateInternshipHandler);
 
 // container.registerInstance(
 //   GET_USER_HANDLER,

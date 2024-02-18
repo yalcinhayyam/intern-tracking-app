@@ -1,4 +1,4 @@
-import "reflect-metadata";
+// import "reflect-metadata";
 
 import type { Metadata } from "next";
 import ReduxProvider from "@/lib/components/ReduxProvider";
@@ -12,7 +12,6 @@ import { ApolloProvider } from "@/lib/utilities/client";
 import { ProviderComposer } from "@/lib/context-api";
 import { Inter } from "next/font/google";
 import { NavBar } from "@/lib/components/NavBar";
-import { SideBar } from "@/lib/components/SideBar";
 import { Footer } from "@/lib/components/Footer";
 import NextUIProvider from "@/lib/components/NextUIProvider";
 
@@ -47,16 +46,8 @@ export default async function RootLayout({
               <body className={inter.className}>
                 <NextUIProvider>
                   <NavBar />
-                  <main className="container mx-auto min-h-screen flex py-5">
-                    <SideBar />
-                    <div className="flex-1 p-4 h-[1000px]">
-                      {children}
-                      <span className="ml-2 text-sm tracking-wide truncate">
-                        Clients
-                      </span>
-                    </div>
-                  </main>
-                  <Footer />
+                    {children}
+                       <Footer />
                 </NextUIProvider>
               </body>
             </html>

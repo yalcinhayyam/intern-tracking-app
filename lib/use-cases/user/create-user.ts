@@ -6,7 +6,7 @@ import {
 import { Left, Right, AbstractHandler, Result } from "@/lib/utilities";
 import { PrismaClient, Role } from "@prisma/client";
 import { inject, injectable } from "tsyringe";
-import { hash as createHash, genSalt } from "bcrypt";
+// import { hash as createHash, genSalt } from "bcrypt";
 import { Roles } from "@/lib/models/enums";
 import { IRole } from "@/lib/models";
 import type { IUserService } from "@/lib/services";
@@ -32,16 +32,16 @@ export class CreateUserHandler
   implements AbstractHandler<CreateUserResult, CreateUserParams>
 {
   constructor(
-    @inject(PRISMA_CLIENT) private readonly prisma: PrismaClient,
-    @inject(USER_SERVICE) private readonly userService: IUserService
+    @inject(PRISMA_CLIENT) private readonly _prisma: PrismaClient,
+    @inject(USER_SERVICE) private readonly _userService: IUserService
   ) {}
   async handle(args: CreateUserParams): Result<CreateUserResult> {
-    if (await this.userService.emailExists(args.email)) {
+    if (await this._userService.emailExists(args.email)) {
       return Left(EMAIL_ALREADY_EXISTS);
     }
-    const hash = await this._createHash(args.password);
+    const hash = await this._userService.createHash(args.password);
 
-    var result = await this.prisma.user.create({
+    var result = await this._prisma.user.create({
       select: {
         id: true,
         email: true,
@@ -59,7 +59,5 @@ export class CreateUserHandler
     });
     return Right(result);
   }
-  _createHash = async (password: string): Promise<string> => {
-    return await createHash(password, await genSalt(10));
-  };
+
 }
