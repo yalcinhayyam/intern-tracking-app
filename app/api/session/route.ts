@@ -1,10 +1,10 @@
-import { authOptions } from "@/lib/utilities";
-import { getServerSession } from "next-auth";
+import {  SESSION } from "@/constants";
+import { injector } from "@/di";
+import { Session } from "@/types";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
-
+  const session = await injector.service<ReturnType<Session>>(SESSION)
   if (!session) {
     return new NextResponse(
       JSON.stringify({ status: "fail", message: "You are not logged in" }),

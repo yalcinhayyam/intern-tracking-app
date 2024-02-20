@@ -3,20 +3,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
-  try {
-    // console.log("START");
-    return NextResponse.next();
-    // console.log("END");
-  } catch (e) {
-    console.log(e);
-    return NextResponse.json({ error: "Something Went Wrong!" });
-  }
+
+export async function middleware(request: NextRequest) {
+
+  return NextResponse.next();
 }
 
-export const config = {
-  matcher: ["/api(/.*)?"],
-};
+// export const config = {
+//   matcher: ["/api(/.*)?"],
+// };
 /*
 Next.js
 TypeScript

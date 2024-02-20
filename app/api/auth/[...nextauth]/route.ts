@@ -1,7 +1,7 @@
-import "reflect-metadata"
+import { AUTH_OPTIONS } from "@/constants";
+import { injector } from "@/di";
+import { Callable } from "@/types";
+import NextAuth, { AuthOptions } from "next-auth";
 
-import NextAuth from "next-auth";
-import { authOptions } from "@/lib/utilities";
-
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+const route = NextAuth(injector.service<Callable<AuthOptions,void>>(AUTH_OPTIONS)());
+export { route as GET, route as POST };

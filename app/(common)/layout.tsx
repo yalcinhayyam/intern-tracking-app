@@ -1,4 +1,4 @@
-import { SideBar } from "@/lib/components/SideBar";
+import { SideBar } from "@/components/SideBar";
 
 export default async function AuthLayout({
   children,

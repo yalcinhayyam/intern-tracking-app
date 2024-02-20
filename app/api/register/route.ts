@@ -1,7 +1,7 @@
-import { CREATE_USER_HANDLER } from "@/lib/constants";
-import { injector } from "@/lib/di";
-import { Roles } from "@/lib/models/enums";
-import { CreateUserResult, CreateUserParams } from "@/lib/use-cases";
+import { CREATE_USER_HANDLER } from "@/constants";
+import { injector } from "@/di";
+import { Roles } from "@/models/enums";
+import { CreateUserResult, CreateUserParams } from "@/use-cases";
 import { match } from "effect/Either";
 import { NextResponse } from "next/server";
 

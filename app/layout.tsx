@@ -1,20 +1,18 @@
-// import "reflect-metadata";
-
+import { injector } from "@/di";
 import type { Metadata } from "next";
-import ReduxProvider from "@/lib/components/ReduxProvider";
+import ReduxProvider from "@/components/ReduxProvider";
 import "./globals.scss";
-import { CounterContextProvider } from "@/lib/context-api/counter";
-import { SessionProvider } from "@/lib/components/SessionProvider";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/utilities";
+import { CounterContextProvider } from "@/context-api/counter";
+import { SessionProvider } from "@/components/SessionProvider";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
-import { ApolloProvider } from "@/lib/utilities/client";
-import { ProviderComposer } from "@/lib/context-api";
+import { ApolloProvider } from "@/utilities/client";
+import { ProviderComposer } from "@/context-api";
 import { Inter } from "next/font/google";
-import { NavBar } from "@/lib/components/NavBar";
-import { Footer } from "@/lib/components/Footer";
-import NextUIProvider from "@/lib/components/NextUIProvider";
-
+import { NavBar } from "@/components/NavBar";
+import { Footer } from "@/components/Footer";
+import NextUIProvider from "@/components/NextUIProvider";
+import { SESSION } from "@/constants";
+import { Session } from "@/types";
 const inter = Inter({ subsets: ["latin"] });
 
 function isDevelopment(): boolean {
@@ -36,7 +34,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await injector.service<ReturnType<Session>>(SESSION)();
+
   return (
     <SessionProvider session={session}>
       <ApolloProvider>
@@ -46,8 +45,8 @@ export default async function RootLayout({
               <body className={inter.className}>
                 <NextUIProvider>
                   <NavBar />
-                    {children}
-                       <Footer />
+                  {children}
+                  <Footer />
                 </NextUIProvider>
               </body>
             </html>

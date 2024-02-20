@@ -1,7 +1,7 @@
 "use client";
 
-import { CounterContext } from "@/lib/context-api";
-import { useAppSelector } from "@/lib/redux";
+import { CounterContext } from "@/context-api";
+import { useAppSelector } from "@/redux";
 import { useContext } from "react";
 
 export default function About() {
