@@ -38,6 +38,12 @@ export const CREATE_INTERNSHIP_HANDLER: RegistryType<"CREATE_INTERNSHIP_HANDLER"
 
 // Failures
 
+export const UNEXPECTED_ERROR: FailureInformationType<"UNEXPECTED_ERROR"> =
+  createFailureInformationType(
+    "UNEXPECTED_ERROR",
+    "SSomething went wrong!"
+  );
+
 export const EMAIL_ALREADY_EXISTS: FailureInformationType<"EMAIL_ALREADY_EXISTS"> =
   createFailureInformationType(
     "EMAIL_ALREADY_EXISTS",

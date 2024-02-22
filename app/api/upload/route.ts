@@ -2,17 +2,18 @@ import { join } from "path";
 import { stat, mkdir, writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 } from "uuid";
+import { handler } from "@/utilities";
 
 const fileFilter = (mimetype: string) => {
   const mimeTypes = ["image/jpeg", "image/png", "image/jpg"];
   return mimeTypes.some((type) => mimetype === type);
 };
 
-export async function POST(request: NextRequest) {
+export const POST = handler<any, any>([], async (request: NextRequest) => {
   const formData = await request.formData();
 
   const file = formData.get("file") as
-    | (Blob & {name: string })
+    | (Blob & { name: string })
     | null;
   if (!file) {
     return NextResponse.json(
@@ -65,4 +66,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+})

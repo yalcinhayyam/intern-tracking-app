@@ -11,8 +11,11 @@ import { Inter } from "next/font/google";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import NextUIProvider from "@/components/NextUIProvider";
-import { SESSION } from "@/constants";
-import { Session } from "@/types";
+import { GET_USER_HANDLER, SESSION } from "@/constants";
+import { Fail, Session } from "@/types";
+import { useErrorHandler, useErrorHandlerCallback } from "@/hooks/useErrorHandler";
+import { GetUserHandler, GetUserParams, GetUserResult } from "@/use-cases";
+import { Left, Right } from "effect/Either";
 const inter = Inter({ subsets: ["latin"] });
 
 function isDevelopment(): boolean {
@@ -34,9 +37,21 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await injector.service<ReturnType<Session>>(SESSION)();
+
+  // const getUser = await useErrorHandler<GetUserResult, GetUserParams>((injector) =>
+  //   injector.inject<GetUserResult, GetUserParams>(GET_USER_HANDLER)
+  // )
+
+  // const get
+
+  const [session] = await useErrorHandlerCallback((injector) => {
+    return injector.service<ReturnType<Session>>(SESSION)();
+  })
+
+
 
   return (
+
     <SessionProvider session={session}>
       <ApolloProvider>
         <ProviderComposer components={[CounterContextProvider]}>

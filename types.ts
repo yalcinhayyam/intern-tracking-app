@@ -56,18 +56,22 @@ export type Result<Type> = Promise<Either<Fail, Type>>;
 export abstract class AbstractHandler<Type, Args> implements IHandler {
   abstract handle(args: Args): Result<Type>;
 }
+ 
+export interface IPipeline<Type, Args> {
+  handle(args: Args, next: () => Result<Type>): Result<Type>
+}
 
 export type Handler<Type, Args> = AbstractHandler<Type, Args>["handle"];
 
 export type Projection<T> = {
   select: {
     [key in keyof T]: T[key] extends Array<infer U>
-      ? U extends object
-        ? Projection<U>
-        : boolean
-      : T[key] extends object
-      ? Projection<T[key]>
-      : boolean;
+    ? U extends object
+    ? Projection<U>
+    : boolean
+    : T[key] extends object
+    ? Projection<T[key]>
+    : boolean;
   };
 };
 
@@ -92,7 +96,7 @@ export type Query = <T>(injector: IInjector) => Callable<
 
 type Prisma = PrismaClient;
 
-export interface IPrismaClient extends Prisma {}
+export interface IPrismaClient extends Prisma { }
 
 export type Session = (
   injector: IInjector

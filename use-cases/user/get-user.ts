@@ -9,12 +9,15 @@ export type GetUserParams = {
   email: string;
 };
 
+
+export type GetUserResult = IUser | undefined | null
+
 @injectable()
 export class GetUserHandler
-  implements AbstractHandler<IUser | undefined | null, GetUserParams>
+  implements AbstractHandler<GetUserResult, GetUserParams>
 {
   constructor(@inject(PRISMA_CLIENT) private readonly prisma: IPrismaClient) {}
-  async handle(args: GetUserParams): Result<IUser | undefined | null> {
+  async handle(args: GetUserParams): Result<GetUserResult> {
     var result = await this.prisma.user.findFirst({
       where: {
         email: args.email,

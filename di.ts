@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { AuthOptions, getServerSession } from "next-auth";
+import z from "zod";
 
 import {
   AUTH_OPTIONS,
@@ -35,17 +36,17 @@ import {
   GetUserHandler,
 } from "@/use-cases";
 import { UserService } from "@/services";
-import { Callable, Session } from "@/types";
+import { Callable, IPipeline, Result, Session } from "@/types";
 import { DateTimeProvider } from "@/utilities/";
 
-export const injector = InjectorFactory.create(container);
+export const injector = InjectorFactory.create(container, new ValidatorPipeline());
 
 // var client = new PrismaClient();
 // // await client.$connect()
 // // container.register(PRISMA_CLIENT, PrismaClient);
 // container.registerInstance(PRISMA_CLIENT, client);
 @singleton()
-export class PrismaClient extends Client {}
+export class PrismaClient extends Client { }
 
 const _authOptions = authOptions(injector);
 const _query = query(injector);
@@ -89,3 +90,19 @@ container.register(CREATE_USER_HANDLER, CreateUserHandler);
 container.register(CREATE_INTERNSHIP_HANDLER, CreateInternshipHandler);
 
 export { container };
+
+class ValidatorPipeline implements IPipeline<any, any> {
+  async handle(args: {}, next: () => Result<any>): Result<any> {
+    args.constructor.name
+
+    const schema = z.object({
+      email: z.string(),
+      username: z.string(),
+    }).required()
+
+    await schema.parseAsync(args);
+    return await next();
+
+  }
+
+}

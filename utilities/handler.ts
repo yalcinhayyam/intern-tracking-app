@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { injector } from "@/di";
 import { InjectorFactory, authChecker } from "@/utilities";
 import { LOGGER, SESSION } from "@/constants";
-import { ILogger, Session } from "@/types";
+import { Fail, ILogger, Session } from "@/types";
+
 
 export interface Request<T> extends NextRequest {
   json(): Promise<T>;
@@ -12,25 +13,24 @@ interface IPipeline<TRequest, TResponse> {
     req: Request<TRequest>,
     injector: ReturnType<typeof InjectorFactory.create>,
     ...args: any[]
-  ): Promise<NextResponse<TResponse>>;
+  ): Promise<NextResponse<TResponse | Fail>>;
 }
 
 export const handler =
-  <TRequest, TResponse>(pipelines: IPipeline<TRequest, TResponse>[]) =>
-  (fn: IPipeline<TRequest, TResponse>) => {
+  <TRequest, TResponse>(pipelines: IPipeline<TRequest, TResponse | Fail>[], fn: IPipeline<TRequest, TResponse>) => {
     return (request: Request<TRequest>, ...args: any[]) => {
       const runPipelines = async (
-        pipelines: IPipeline<TRequest, TResponse>[]
-      ): Promise<NextResponse<TResponse>> => {
+        pipelines: IPipeline<TRequest, TResponse | Fail>[]
+      ): Promise<NextResponse<TResponse | Fail>> => {
         try {
-          if (pipelines.length == 0) return fn(request, injector, ...args);
+
+          const params: Parameters<IPipeline<TRequest, TResponse>> = [request, injector, ...args]
+
+          if (pipelines.length == 0) return fn(...params);
           const [currentPipeline, ...restPipelines] = pipelines;
 
           await currentPipeline(
-            request,
-            injector,
-
-            ...args
+            ...params
           );
           return runPipelines(restPipelines);
         } catch (error) {
@@ -53,6 +53,7 @@ export const handler =
     };
   };
 
+
 export const AuthorizationPipeline = <TRequest, TResponse>(
   roles: string[]
 ): IPipeline<TRequest, TResponse> => {
@@ -63,7 +64,7 @@ export const AuthorizationPipeline = <TRequest, TResponse>(
         roles
       )
     ) {
-      throw new PipelineError("Authentication Errrr", 401);
+      throw new PipelineError("Authentication Error", 401);
     }
   };
 };

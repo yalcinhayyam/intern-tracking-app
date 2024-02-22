@@ -13,7 +13,7 @@ export class CreateInternshipHandler
   implements AbstractHandler<CreateInternshipResult, CreateInternshipParams>
 {
   constructor(
-    @inject(PRISMA_CLIENT) private readonly _prisma: IPrismaClient
+    @inject(PRISMA_CLIENT) private readonly _prisma: IPrismaClient,
     @inject(USER_SERVICE) private readonly _userService : IUserService
   ) {}
 
