@@ -57,7 +57,7 @@ export abstract class AbstractHandler<Type, Args> implements IHandler {
 }
  
 export interface IPipeline<Type, Args> {
-  handle(args: Args, next: () => Result<Type>): Result<Type>
+  handle(args: Args, next: () => IResult<Type>): IResult<Type>
 }
 
 export type Handler<Type, Args> = AbstractHandler<Type, Args>["handle"];
