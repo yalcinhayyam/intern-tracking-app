@@ -1,6 +1,6 @@
 import { EMAIL_ALREADY_EXISTS, PRISMA_CLIENT, USER_SERVICE } from "@/constants";
 import { Left, Right } from "@/utilities";
-import type { AbstractHandler, IPrismaClient, Result } from "@/types";
+import type { AbstractHandler, IPrismaClient, IResult } from "@/types";
 import { inject, injectable } from "tsyringe";
 // import { hash as createHash, genSalt } from "bcrypt";
 import { Roles } from "@/models/enums";
@@ -31,7 +31,7 @@ export class CreateUserHandler
     @inject(PRISMA_CLIENT) private readonly _prisma: IPrismaClient,
     @inject(USER_SERVICE) private readonly _userService: IUserService
   ) {}
-  async handle(args: CreateUserParams): Result<CreateUserResult> {
+  async handle(args: CreateUserParams): IResult<CreateUserResult> {
     if (await this._userService.emailExists(args.email)) {
       return Left(EMAIL_ALREADY_EXISTS);
     }

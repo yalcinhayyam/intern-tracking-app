@@ -2,9 +2,9 @@ import { Right } from "@/utilities";
 import type {
   AbstractHandler,
   ICursor,
-  IQuery,
+  Query,
   Projection,
-  Result,
+  IResult,
 } from "@/types";
 import type { IPrismaClient } from "@/types";
 import { PRISMA_CLIENT, QUERY } from "@/constants";
@@ -29,9 +29,9 @@ export class GetBooksHandler
   ];
   constructor(
     @inject(PRISMA_CLIENT) private readonly prisma: IPrismaClient,
-    @inject(QUERY) private readonly query: IQuery<IBook>
+    @inject(QUERY) private readonly query: Query<IBook>
   ) {}
-  async handle(args: GetBooksParams): Result<GetBooksResult> {
+  async handle(args: GetBooksParams): IResult<GetBooksResult> {
     // console.log(args)
     var books = await this.prisma.book.findMany({
       ...this.query({ ...args, orderBy: "asc" }),

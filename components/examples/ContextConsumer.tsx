@@ -1,5 +1,5 @@
 "use client";
-import { CounterContext } from "@/context-api";
+import { CounterContext } from "@/context";
 import { Button } from "@nextui-org/react";
 
 import React, { useContext, useEffect, useState } from "react";

@@ -1,9 +1,8 @@
 import { ICursor, Query, Projection } from "@/types";
 import { IInjector } from "@/types";
 
-export const query: Query =
-  <T>(injector: IInjector) =>
-  ({
+export function query<T>(injector: IInjector): Query<T> {
+  return ({
     first,
     after,
     orderBy,
@@ -20,3 +19,4 @@ export const query: Query =
     orderBy: { id: orderBy },
     ...fields,
   });
+}

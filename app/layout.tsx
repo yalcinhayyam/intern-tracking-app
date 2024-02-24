@@ -1,21 +1,23 @@
-import { injector } from "@/di";
 import type { Metadata } from "next";
 import ReduxProvider from "@/components/ReduxProvider";
 import "./globals.scss";
-import { CounterContextProvider } from "@/context-api/counter";
+import { CounterContextProvider } from "@/context/counter";
 import { SessionProvider } from "@/components/SessionProvider";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { ApolloProvider } from "@/utilities/client";
-import { ProviderComposer } from "@/context-api";
+import { ProviderComposer } from "@/context";
 import { Inter } from "next/font/google";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import NextUIProvider from "@/components/NextUIProvider";
 import { GET_USER_HANDLER, SESSION } from "@/constants";
-import { Fail, Session } from "@/types";
-import { useErrorHandler, useErrorHandlerCallback } from "@/hooks/useErrorHandler";
-import { GetUserHandler, GetUserParams, GetUserResult } from "@/use-cases";
-import { Left, Right } from "effect/Either";
+import { Session } from "@/types";
+import {
+  useErrorHandler,
+  useWrappedErrorHandler,
+} from "@/hooks/useErrorHandler";
+import { GetUserParams, GetUserResult } from "@/use-cases";
+import { UIContextProvider } from "@/context/ui";
 const inter = Inter({ subsets: ["latin"] });
 
 function isDevelopment(): boolean {
@@ -37,24 +39,21 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [session] = await useErrorHandler((injector) =>
+    injector.service<ReturnType<Session>>(SESSION)()
+  );
 
-  // const getUser = await useErrorHandler<GetUserResult, GetUserParams>((injector) =>
-  //   injector.inject<GetUserResult, GetUserParams>(GET_USER_HANDLER)
-  // )
-
-  // const get
-
-  const [session] = await useErrorHandlerCallback((injector) => {
-    return injector.service<ReturnType<Session>>(SESSION)();
-  })
-
-
-
+  // const getUser = await useWrappedErrorHandler<GetUserResult, GetUserParams>(
+  //   GET_USER_HANDLER
+  // );
+  // console.log((await getUser({ email: "" })).success);
   return (
 
     <SessionProvider session={session}>
       <ApolloProvider>
-        <ProviderComposer components={[CounterContextProvider]}>
+        <ProviderComposer
+          components={[CounterContextProvider, UIContextProvider]}
+        >
           <ReduxProvider>
             <html lang="en">
               <body className={inter.className}>

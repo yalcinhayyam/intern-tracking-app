@@ -1,6 +1,6 @@
 import { PRISMA_CLIENT, CONTENT_LENGTH } from "@/constants";
 import { Right, Left } from "@/utilities";
-import { AbstractHandler, Result } from "@/types";
+import { AbstractHandler, IResult } from "@/types";
 import type { IPrismaClient } from "@/types";
 import { inject, injectable } from "tsyringe";
 import { z } from "zod";
@@ -20,7 +20,7 @@ export class CreateBookHandler
   implements AbstractHandler<CreateBookResult, CreateBookParams>
 {
   constructor(@inject(PRISMA_CLIENT) private readonly prisma: IPrismaClient) {}
-  async handle(args: CreateBookParams): Result<CreateBookResult> {
+  async handle(args: CreateBookParams): IResult<CreateBookResult> {
     if (!this._titleLongerThan3Character(args.title)) {
       return Left(CONTENT_LENGTH("Create Book Title", 3));
     }

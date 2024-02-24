@@ -31,7 +31,7 @@ export const POST = handler<{
       roleId: Roles.USER,
       surname,
     });
-    return match(result, {
+    return result.match({
       onRight(user) {
         return NextResponse.json({
           user: {

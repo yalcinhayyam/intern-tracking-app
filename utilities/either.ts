@@ -6,29 +6,29 @@ import {
 } from "@/types";
 import { DATE_TIME_PROVIDER, LOGGER, SESSION } from "@/constants";
 import { injector } from "@/di";
-import { Either, right, left } from "effect/Either";
+import { Result } from "@/utilities";
 
 export async function Right<E, A>(
   value: A,
   ...args: any[]
-): Promise<Either<E, A>> {
-  const logger = injector.service<ILogger>(LOGGER);
-  const dateTimeProvider =
-    injector.service<IDateTimeProvider>(DATE_TIME_PROVIDER);
-  const session = await injector.service<ReturnType<Session>>(SESSION)();
-  logger.info({
-    Success: { value },
-    args,
-    user: session?.user,
-    date: dateTimeProvider.now,
-  });
-  return Promise.resolve(right<A>(value));
+): Promise<Result<E, A>> {
+  // const logger = injector.service<ILogger>(LOGGER);
+  // const dateTimeProvider =
+  //   injector.service<IDateTimeProvider>(DATE_TIME_PROVIDER);
+  // const session = await injector.service<ReturnType<Session>>(SESSION)();
+  // logger.info({
+  //   Success: { value },
+  //   args,
+  //   user: session?.user,
+  //   date: dateTimeProvider.now,
+  // });
+  return Promise.resolve(Result.fromSuccess<A>(value));
 }
 
 export async function Left<E extends string, A>(
   value: FailureInformationType<E>,
   ...args: any[]
-): Promise<Either<E | string, A>> {
+): Promise<Result<E | string, A>> {
   const logger = injector.service<ILogger>(LOGGER);
   const dateTimeProvider =
     injector.service<IDateTimeProvider>(DATE_TIME_PROVIDER);
@@ -42,5 +42,5 @@ export async function Left<E extends string, A>(
     date: dateTimeProvider.now,
   });
 
-  return Promise.resolve(left<string>(value.message));
+  return Promise.resolve(Result.fromError<string>(value.message));
 }

@@ -1,8 +1,8 @@
 import { DependencyContainer, InjectionToken } from "tsyringe";
-import { AbstractHandler, IInjector, IPipeline, Result } from "@/types";
+import { AbstractHandler, IInjector, IPipeline, IResult } from "@/types";
 
 interface Handle<Type, Args> {
-  (cls: AbstractHandler<Type, Args>): (args: Args) => Result<Type>;
+  (cls: AbstractHandler<Type, Args>): (args: Args) => IResult<Type>;
 }
 
 export abstract class AbstractValueProvider<T> {
@@ -19,7 +19,7 @@ class Injector implements IInjector {
   constructor(private readonly _container: DependencyContainer, private readonly pipelines: IPipeline<any, any>[]) { }
 
   _applyPipelines = <Type, Args>(handler: AbstractHandler<Type, Args>, args: Args, pipelines: IPipeline<Type, Args>[]) => {
-    const runPipelines = (pipelines: IPipeline<Type, Args>[]): Result<Type> => {
+    const runPipelines = (pipelines: IPipeline<Type, Args>[]): IResult<Type> => {
       if (pipelines.length == 0) return handler.handle(args)
       const [pipeline, ...restPipelines] = pipelines
       return pipeline.handle(args, () =>
@@ -41,7 +41,7 @@ class Injector implements IInjector {
 
   inject = <Type, Args>(
     token: InjectionToken<AbstractHandler<Type, Args>>
-  ): ((args: Args) => Result<Type>) =>
+  ): ((args: Args) => IResult<Type>) =>
     this._handle<Type, Args>()(
       this.container.resolve<AbstractHandler<Type, Args>>(token)
     );

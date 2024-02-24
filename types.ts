@@ -3,9 +3,8 @@
 // }
 
 import { PrismaClient } from "@prisma/client";
-import { Either } from "effect/Either";
 import { Session as NextSession } from "next-auth";
-import { AbstractValueProvider } from "./utilities";
+import { AbstractValueProvider,Result } from "@/utilities";
 import { InjectionToken } from "tsyringe";
 
 export interface ILogger {
@@ -51,10 +50,10 @@ export interface Callable<Type, Args> {
   (args: Args): Type;
 }
 
-export type Result<Type> = Promise<Either<Fail, Type>>;
+export type IResult<Type> = Promise<Result<Fail, Type>>;
 
 export abstract class AbstractHandler<Type, Args> implements IHandler {
-  abstract handle(args: Args): Result<Type>;
+  abstract handle(args: Args): IResult<Type>;
 }
  
 export interface IPipeline<Type, Args> {
@@ -79,7 +78,7 @@ export interface ICursor {
   value: string;
 }
 
-export type Query = <T>(injector: IInjector) => Callable<
+export type Query<T> =  Callable<
   {
     skip: number;
     take: number;
@@ -105,7 +104,7 @@ export type Session = (
 export interface IInjector {
   inject: <Type, Args>(
     token: InjectionToken<AbstractHandler<Type, Args>>
-  ) => (args: Args) => Result<Type>;
+  ) => (args: Args) => IResult<Type>;
 
   service: <Type>(token: InjectionToken<Type>) => Type;
   provider: <Type>(
