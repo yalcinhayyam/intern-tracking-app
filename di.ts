@@ -36,7 +36,7 @@ import {
   GetUserHandler,
 } from "@/use-cases";
 import { UserService } from "@/services";
-import { Callable, IPipeline, Result, Session } from "@/types";
+import { Callable, IPipeline, IResult, Session } from "@/types";
 import { DateTimeProvider } from "@/utilities/";
 
 export const injector = InjectorFactory.create(container, new ValidatorPipeline());
@@ -92,7 +92,7 @@ container.register(CREATE_INTERNSHIP_HANDLER, CreateInternshipHandler);
 export { container };
 
 class ValidatorPipeline implements IPipeline<any, any> {
-  async handle(args: {}, next: () => Result<any>): Result<any> {
+  async handle(args: {}, next: () => IResult<any>): IResult<any> {
     args.constructor.name
 
     const schema = z.object({

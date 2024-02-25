@@ -1,4 +1,4 @@
-import { LOGGER } from "@/constants";
+import { LOGGER, UNEXPECTED_ERROR } from "@/constants";
 import { injector } from "@/di";
 import { AbstractHandler, IInjector, ILogger, IResult } from "@/types";
 import { Left } from "@/utilities";
@@ -28,4 +28,3 @@ export async function useWrappedErrorHandler<Type, Args>(
   };
 }
 
-const UNEXPECTED_ERROR = "" as any;
