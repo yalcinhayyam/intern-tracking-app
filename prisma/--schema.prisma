@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// generator typegraphql {
+//   provider = "typegraphql-prisma"
+//   output   = "../prisma/generated/type-graphql"
+// }
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// ----- Example ----
+model Book {
+  id       String @id @default(uuid())
+  title    String
+  authorId String @unique
+  author   Author @relation(fields: [authorId], references: [id])
+}
+
+model Author {
+  id    String @id @default(uuid())
+  name  String
+  books Book[]
+}
+
+/// ----- Example ----
+model User {
+  id      String @id @default(uuid())
+  email   String @unique
+  name    String //@db.Text
+  surname String
+  // number  String
+
+  // salt Bytes
+  hash Bytes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  isActive    Boolean      @default(true)
+  isVerified  Boolean      @default(false)
+  roleId      Int
+  role        Role         @relation(fields: [roleId], references: [id])
+  contacts    Contact[]
+  internships Internship[]
+}
+
+model Contact {
+  id    String @id @default(uuid())
+  phone String @unique
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  isActive Boolean @default(false)
+}
+
+model Internship {
+  id        String   @id @default(uuid())
+  title     String
+  workplace String
+  day       Int
+  startDate DateTime
+  endDate   DateTime
+
+  documents  Document[]
+  conclusion Conclusion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  internTypeId Int
+  internType   InternType @relation(fields: [internTypeId], references: [id])
+}
+
+model InternType {
+  id    Int    @id @default(autoincrement())
+  title String
+  code  String
+
+  internships Internship[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  title String
+  code  String
+  users User[]
+}
+
+model Document {
+  id           String     @id @default(uuid())
+  src          String
+  internshipId String
+  internship   Internship @relation(fields: [internshipId], references: [id])
+
+  documentTypeId String
+  documentType   DocumentType @relation(fields: [documentTypeId], references: [id])
+
+  isApproved Boolean @default(false)
+}
+
+model DocumentType {
+  id    String @id @default(uuid())
+  title String
+
+  documents Document[]
+}
+
+model Conclusion {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isApproved  Boolean  @default(false)
+  description String
+
+  internshipId String
+  internship   Internship @relation(fields: [internshipId], references: [id])
+}
+
+// model A {
+//   id String @id @default(uuid())
+//   b  B?
+// }
+
+// model B {
+//   id  String @id @default(uuid())
+//   aId String @unique
+//   a   A      @relation(fields: [aId], references: [id])
+// }
+
+// enum InternTypes {
+//   MANDATORY
+//   VOLUNTARY
+//   LONG_PERIOD
+// }
+
+// enum Roles {
+//   USER
+//   ADMIN
+// }

@@ -1,149 +1,75 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
-// generator typegraphql {
-//   provider = "typegraphql-prisma"
-//   output   = "../prisma/generated/type-graphql"
-// }
-
+// Veritabanı bağlantı ayarları
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-/// ----- Example ----
-model Book {
-  id       String @id @default(uuid())
-  title    String
-  authorId String @unique
-  author   Author @relation(fields: [authorId], references: [id])
+
+model Category {
+    id        String    @id @default(uuid()) @db.Uuid
+    name      String
+    // Diğer kategori özellikleri eklenebilir
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    products   Product[]
 }
 
-model Author {
-  id    String @id @default(uuid())
-  name  String
-  books Book[]
+model Tag {
+    id        String    @id @default(uuid()) @db.Uuid
+    name      String
+    // Diğer kategori özellikleri eklenebilir
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    Product   Product[]
 }
 
-/// ----- Example ----
+// User modeli (önceki)
 model User {
-  id      String @id @default(uuid())
-  email   String @unique
-  name    String //@db.Text
-  surname String
-  // number  String
-
-  // salt Bytes
-  hash Bytes
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  isActive    Boolean      @default(true)
-  isVerified  Boolean      @default(false)
-  roleId      Int
-  role        Role         @relation(fields: [roleId], references: [id])
-  contacts    Contact[]
-  internships Internship[]
+    id        String   @id @default(uuid()) @db.Uuid
+    username  String
+    email     String   @unique
+    password  String
+    // Diğer kullanıcı özellikleri eklenebilir
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    orders     Order[]
 }
 
-model Contact {
-  id    String @id @default(uuid())
-  phone String @unique
+// Product modeli (önceki)
+model Product {
+    id          String   @id @default(uuid()) @db.Uuid
+    name        String
+    description String?
+    price       Float
+    stock       Int
+    // Diğer ürün özellikleri eklenebilir
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-
-  isActive Boolean @default(false)
+    // Foreign key ilişkileri
+    categoryId String   @db.Uuid
+    category   Category @relation(fields: [categoryId], references: [id])
+    orders      Order[]
 }
 
-model Internship {
-  id        String   @id @default(uuid())
-  title     String
-  workplace String
-  day       Int
-  startDate DateTime
-  endDate   DateTime
+// Order modeli (önceki)
+model Order {
+    id        String   @id @default(uuid()) @db.Uuid
+    userId    String   @db.Uuid
+    productId String   @db.Uuid
+    quantity  Int
+    total     Float
+    // Diğer sipariş özellikleri eklenebilir
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  documents  Document[]
-  conclusion Conclusion[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-
-  internTypeId Int
-  internType   InternType @relation(fields: [internTypeId], references: [id])
+    // Foreign key ilişkileri
+    user    User    @relation(fields: [userId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
 }
-
-model InternType {
-  id    Int    @id @default(autoincrement())
-  title String
-  code  String
-
-  internships Internship[]
-}
-
-model Role {
-  id    Int    @id @default(autoincrement())
-  title String
-  code  String
-  users User[]
-}
-
-model Document {
-  id           String     @id @default(uuid())
-  src          String
-  internshipId String
-  internship   Internship @relation(fields: [internshipId], references: [id])
-
-  documentTypeId String
-  documentType   DocumentType @relation(fields: [documentTypeId], references: [id])
-
-  isApproved Boolean @default(false)
-}
-
-model DocumentType {
-  id    String @id @default(uuid())
-  title String
-
-  documents Document[]
-}
-
-model Conclusion {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  isApproved  Boolean  @default(false)
-  description String
-
-  internshipId String
-  internship   Internship @relation(fields: [internshipId], references: [id])
-}
-
-// model A {
-//   id String @id @default(uuid())
-//   b  B?
-// }
-
-// model B {
-//   id  String @id @default(uuid())
-//   aId String @unique
-//   a   A      @relation(fields: [aId], references: [id])
-// }
-
-// enum InternTypes {
-//   MANDATORY
-//   VOLUNTARY
-//   LONG_PERIOD
-// }
-
-// enum Roles {
-//   USER
-//   ADMIN
-// }
