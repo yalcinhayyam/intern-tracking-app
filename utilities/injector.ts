@@ -5,18 +5,9 @@ interface Handle<Type, Args> {
   (cls: AbstractHandler<Type, Args>): (args: Args) => IResult<Type>;
 }
 
-export abstract class AbstractValueProvider<T> {
-  constructor(protected _value: T) { }
-  get value(): Readonly<T> {
-    return this._value;
-  }
-  private set setValue(value: T) {
-    this._value = value;
-  }
-  changeValue = (value: T) => (this.setValue = value);
-}
+
 class Injector implements IInjector {
-  constructor(private readonly _container: DependencyContainer, private readonly pipelines: IPipeline<any, any>[]) { }
+  constructor(private readonly _container: DependencyContainer) { }
 
   _applyPipelines = <Type, Args>(handler: AbstractHandler<Type, Args>, args: Args, pipelines: IPipeline<Type, Args>[]) => {
     const runPipelines = (pipelines: IPipeline<Type, Args>[]): IResult<Type> => {
@@ -32,8 +23,8 @@ class Injector implements IInjector {
   private _handle =
     <Type, Args>(): Handle<Type, Args> =>
       (cls: AbstractHandler<Type, Args>) =>
-        (args: Args) =>
-          this._applyPipelines(cls, args, this.pipelines);
+        (args: Args) => cls.handle(args)
+          // this._applyPipelines(cls, args, this.pipelines);
 
   private get container(): DependencyContainer {
     return this._container;
@@ -49,15 +40,12 @@ class Injector implements IInjector {
   service = <Type>(token: InjectionToken<Type>): Type =>
     this.container.resolve<Type>(token);
 
-  provider = <Type>(
-    token: InjectionToken<AbstractValueProvider<Type>>
-  ): AbstractValueProvider<Type> =>
-    this.container.resolve<AbstractValueProvider<Type>>(token);
+
 }
 
 export class InjectorFactory {
-  static create = (container: DependencyContainer, pipelines: IPipeline<unknown, unknown>[]): Injector =>
-    new Injector(container, pipelines);
+  static create = (container: DependencyContainer): Injector =>
+    new Injector(container);
 }
 
 

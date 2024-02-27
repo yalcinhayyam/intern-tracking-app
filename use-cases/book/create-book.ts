@@ -1,14 +1,18 @@
-import { PRISMA_CLIENT, CONTENT_LENGTH } from "@/constants";
+import {
+  BOOK_REPOSITORY,
+  CONTENT_LENGTH,
+} from "@/constants";
 import { Right, Left } from "@/utilities";
 import { AbstractHandler, IResult } from "@/types";
-import type { IPrismaClient } from "@/types";
 import { inject, injectable } from "tsyringe";
 import { z } from "zod";
+import { type IBookRepository } from "@/repository";
 
-export type CreateBookParams = {
-  title: string;
-  author: string;
-};
+
+
+export class CreateBookParams {
+  constructor(public readonly title: string, public readonly author: string) {}
+}
 export type CreateBookResult = {
   id: string;
   title: string;
@@ -19,22 +23,16 @@ export type CreateBookResult = {
 export class CreateBookHandler
   implements AbstractHandler<CreateBookResult, CreateBookParams>
 {
-  constructor(@inject(PRISMA_CLIENT) private readonly prisma: IPrismaClient) {}
+  constructor(
+    @inject(BOOK_REPOSITORY) private readonly _bookRepository: IBookRepository
+  ) {}
   async handle(args: CreateBookParams): IResult<CreateBookResult> {
     if (!this._titleLongerThan3Character(args.title)) {
       return Left(CONTENT_LENGTH("Create Book Title", 3));
     }
 
-    var result = this.prisma.book.create({
-      data: {
-        title: args.title,
-        author: {
-          create: {
-            name: args.author,
-          },
-        },
-      },
-    });
+    console.log(args)
+    const result = await this._bookRepository.create({ ...args });
     return Right(await result);
   }
 
@@ -42,11 +40,3 @@ export class CreateBookHandler
     return z.string().min(3).safeParse(title).success;
   }
 }
-
-interface IEntity {}
-
-function EntityTypeGenerator() {
-  return class implements IEntity {};
-}
-
-class Book extends EntityTypeGenerator() {}

@@ -6,10 +6,10 @@ import type {
   Projection,
   IResult,
 } from "@/types";
-import type { IPrismaClient } from "@/types";
-import { PRISMA_CLIENT, QUERY } from "@/constants";
+import { BOOK_REPOSITORY, QUERY } from "@/constants";
 import { inject, injectable } from "tsyringe";
 import type { IBook } from "@/models";
+import { type IBookRepository } from "@/repository";
 
 export type GetBooksParams = {
   fields: Projection<IBook>;
@@ -28,15 +28,11 @@ export class GetBooksHandler
     { id: "2", title: "City of Glass", author: "Paul Auster" },
   ];
   constructor(
-    @inject(PRISMA_CLIENT) private readonly prisma: IPrismaClient,
-    @inject(QUERY) private readonly query: Query<IBook>
+    @inject(BOOK_REPOSITORY) private readonly _bookRepository: IBookRepository,
   ) {}
   async handle(args: GetBooksParams): IResult<GetBooksResult> {
     // console.log(args)
-    var books = await this.prisma.book.findMany({
-      ...this.query({ ...args, orderBy: "asc" }),
-      where: {},
-    });
+    var books = await this._bookRepository.get(args)
     return Right(books);
   }
 }

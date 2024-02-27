@@ -12,9 +12,15 @@ export const SESSION: RegistryType<"SESSION"> = "SESSION";
 export const QUERY: RegistryType<"QUERY"> = "QUERY";
 export const COMPARE_PASSWORD: RegistryType<"COMPARE_PASSWORD"> = "COMPARE_PASSWORD";
 
+// Value Providers
+export const PIPELINE_WRAPPER_CONTEXT: RegistryType<"PIPELINE_WRAPPER_CONTEXT"> = "PIPELINE_WRAPPER_CONTEXT";
+
+
+// Repository 
+export const USER_REPOSITORY: RegistryType<"USER_REPOSITORY"> = "USER_REPOSITORY";
+export const BOOK_REPOSITORY: RegistryType<"BOOK_REPOSITORY"> = "BOOK_REPOSITORY";
 
 // Service
-export const PRISMA_CLIENT: RegistryType<"PRISMA_CLIENT"> = "PRISMA_CLIENT";
 export const LOGGER: RegistryType<"LOGGER"> = "LOGGER";
 export const USER_SERVICE: RegistryType<"USER_SERVICE"> = "USER_SERVICE";
 export const DATE_TIME_PROVIDER: RegistryType<"DATE_TIME_PROVIDER"> =
@@ -33,8 +39,6 @@ export const CREATE_USER_HANDLER: RegistryType<"CREATE_USER_HANDLER"> =
   "CREATE_USER_HANDLER";
 
 
-export const CREATE_INTERNSHIP_HANDLER: RegistryType<"CREATE_INTERNSHIP_HANDLER"> =
-  "CREATE_INTERNSHIP_HANDLER";
 
 // Failures
 

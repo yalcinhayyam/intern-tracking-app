@@ -1,25 +1,24 @@
 import "reflect-metadata";
 import { AuthOptions, getServerSession } from "next-auth";
-import z from "zod";
 
 import {
   AUTH_OPTIONS,
+  BOOK_REPOSITORY,
   COMPARE_PASSWORD,
   CREATE_BOOK_HANDLER,
-  CREATE_INTERNSHIP_HANDLER,
   CREATE_USER_HANDLER,
   DATE_TIME_PROVIDER,
   GET_BOOKS_HANDLER,
   GET_USER_HANDLER,
   LOGGER,
-  PRISMA_CLIENT,
+  PIPELINE_WRAPPER_CONTEXT,
   QUERY,
   SESSION,
+  USER_REPOSITORY,
   USER_SERVICE,
 } from "@/constants";
-import { container, singleton } from "tsyringe";
+import { container } from "tsyringe";
 
-import { PrismaClient as Client } from "@prisma/client";
 import {
   ComparePassword,
   ConsoleLogger,
@@ -27,26 +26,32 @@ import {
   authOptions,
   comparePassword,
   query,
+  DateTimeProvider,
+
 } from "@/utilities";
 import {
   CreateBookHandler,
-  CreateInternshipHandler,
   CreateUserHandler,
   GetBooksHandler,
   GetUserHandler,
 } from "@/use-cases";
 import { UserService } from "@/services";
-import { Callable, IPipeline, IResult, Session } from "@/types";
-import { DateTimeProvider } from "@/utilities/";
+import { Callable, Session } from "@/types";
 
-export const injector = InjectorFactory.create(container, new ValidatorPipeline());
+import { PrismaBookRepository, PrismaUserRepository } from "@/repository";
+
+export const injector = InjectorFactory.create(container);
 
 // var client = new PrismaClient();
 // // await client.$connect()
 // // container.register(PRISMA_CLIENT, PrismaClient);
+import { PrismaClient as Client } from "@prisma/client";
+
+import { singleton } from "tsyringe";
+
 // container.registerInstance(PRISMA_CLIENT, client);
 @singleton()
-export class PrismaClient extends Client { }
+export class PrismaClient extends Client {}
 
 const _authOptions = authOptions(injector);
 const _query = query(injector);
@@ -70,9 +75,12 @@ container.register<ReturnType<ComparePassword>>(COMPARE_PASSWORD, {
   useValue: comparePassword(injector),
 });
 
-container.registerSingleton(PRISMA_CLIENT, PrismaClient);
 container.registerSingleton(LOGGER, ConsoleLogger);
 container.registerSingleton(DATE_TIME_PROVIDER, DateTimeProvider);
+
+// Repository
+container.registerSingleton(USER_REPOSITORY, PrismaUserRepository);
+container.registerSingleton(BOOK_REPOSITORY, PrismaBookRepository);
 
 // Services
 container.registerSingleton(USER_SERVICE, UserService);
@@ -85,24 +93,4 @@ container.register(CREATE_BOOK_HANDLER, CreateBookHandler);
 container.register(GET_USER_HANDLER, GetUserHandler);
 container.register(CREATE_USER_HANDLER, CreateUserHandler);
 
-// Internship
-
-container.register(CREATE_INTERNSHIP_HANDLER, CreateInternshipHandler);
-
 export { container };
-
-class ValidatorPipeline implements IPipeline<any, any> {
-  async handle(args: {}, next: () => IResult<any>): IResult<any> {
-    args.constructor.name
-
-    const schema = z.object({
-      email: z.string(),
-      username: z.string(),
-    }).required()
-
-    await schema.parseAsync(args);
-    return await next();
-
-  }
-
-}

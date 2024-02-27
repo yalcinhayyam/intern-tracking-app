@@ -1,8 +1,8 @@
-import { PRISMA_CLIENT, USER_NOT_FOUND } from "@/constants";
+import { USER_NOT_FOUND, USER_REPOSITORY } from "@/constants";
 import { IUser } from "@/models";
+import { type IUserRepository } from "@/repository";
 import { AbstractHandler, IResult } from "@/types";
 import { Left, Right } from "@/utilities";
-import type { IPrismaClient } from "@/types";
 import { inject, injectable } from "tsyringe";
 
 export type GetUserParams = {
@@ -16,17 +16,9 @@ export type GetUserResult = IUser | undefined | null
 export class GetUserHandler
   implements AbstractHandler<GetUserResult, GetUserParams>
 {
-  constructor(@inject(PRISMA_CLIENT) private readonly prisma: IPrismaClient) {}
+  constructor(@inject(USER_REPOSITORY) private readonly _userRepository: IUserRepository) {}
   async handle(args: GetUserParams): IResult<GetUserResult> {
-    var result = await this.prisma.user.findFirst({
-      where: {
-        email: args.email,
-        isActive: true,
-      },
-      include: {
-        role: true,
-      },
-    });
+    var result = await this._userRepository.get(args.email)
     if (!result) {
       return Left(USER_NOT_FOUND);
     }

@@ -2,9 +2,8 @@
 //   abstract code: string;
 // }
 
-import { PrismaClient } from "@prisma/client";
 import { Session as NextSession } from "next-auth";
-import { AbstractValueProvider,Result } from "@/utilities";
+import { Result } from "@/utilities";
 import { InjectionToken } from "tsyringe";
 
 export interface ILogger {
@@ -55,9 +54,9 @@ export type IResult<Type> = Promise<Result<Fail, Type>>;
 export abstract class AbstractHandler<Type, Args> implements IHandler {
   abstract handle(args: Args): IResult<Type>;
 }
- 
+
 export interface IPipeline<Type, Args> {
-  handle(args: Args, next: () => IResult<Type>): IResult<Type>
+  handle(args: Args, next: () => IResult<Type>): IResult<Type>;
 }
 
 export type Handler<Type, Args> = AbstractHandler<Type, Args>["handle"];
@@ -65,12 +64,12 @@ export type Handler<Type, Args> = AbstractHandler<Type, Args>["handle"];
 export type Projection<T> = {
   select: {
     [key in keyof T]: T[key] extends Array<infer U>
-    ? U extends object
-    ? Projection<U>
-    : boolean
-    : T[key] extends object
-    ? Projection<T[key]>
-    : boolean;
+      ? U extends object
+        ? Projection<U>
+        : boolean
+      : T[key] extends object
+      ? Projection<T[key]>
+      : boolean;
   };
 };
 
@@ -78,7 +77,7 @@ export interface ICursor {
   value: string;
 }
 
-export type Query<T> =  Callable<
+export type Query<T> = Callable<
   {
     skip: number;
     take: number;
@@ -93,10 +92,6 @@ export type Query<T> =  Callable<
   }
 >;
 
-type Prisma = PrismaClient;
-
-export interface IPrismaClient extends Prisma { }
-
 export type Session = (
   injector: IInjector
 ) => Callable<Promise<ISession | null>, void>;
@@ -107,7 +102,4 @@ export interface IInjector {
   ) => (args: Args) => IResult<Type>;
 
   service: <Type>(token: InjectionToken<Type>) => Type;
-  provider: <Type>(
-    token: InjectionToken<AbstractValueProvider<Type>>
-  ) => AbstractValueProvider<Type>;
 }
